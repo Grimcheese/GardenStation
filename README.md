@@ -8,6 +8,8 @@ The following data will be tracked:
 
 There should also be a live feed of the garden from the front.
 
+Initially the web page should only be accessible to local traffic so the data can be accessed from home or devices connected via VPN. 
+
 # Tech
 ## Web Server
 The web server will be run using Apache 2.4. Currently using it on a Winodws installation however later the intent is to run it on a linux box vm.
