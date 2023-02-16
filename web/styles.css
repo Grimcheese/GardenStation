@@ -1,5 +1,21 @@
+li.side-by-side{
+    float: left;
+    margin-left: 10px;
+}
+
 ul {
     list-style-type: none; /* Remove bullets */
     padding: 0;
     margin: 0;
+}
+
+nav {
+    margin: auto;
+    width: 50%;
+    border: 3px solid green;
+}
+
+h1.centre {
+    margin: auto;
+    width: 50%;
 }
