@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "gardenstation"
+version = "0.0.1"
+description = "A garden monitoring web application."
+authors = ["Grimcheese <albychawula@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sqlalchemy = "^2.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
