@@ -8,7 +8,8 @@
 </head>
 
 <body>
-    <!--#include file="include_head.html" -->
+    <!--#include file="include_header.html" -->
+
     <nav>
         <h1 class="centre">Garden Station Home Page</h1>
         <ul>
@@ -18,6 +19,9 @@
         </ul>
     </nav><br>
 
+    <p>Welcome to my GardenStation!.<br>On this site you can view the latest stats that
+        have been recorded by my weather station and soil moisture detectors.
+    </p>
 
 </body>
 
