@@ -21,6 +21,24 @@ from pathlib import Path
 
 import random
 
+def next_datetime(dt_obj, h, m=0, s=0):
+    """Create a new datetime object with specified time added to it.
+    
+    Args:
+        dt_obj: The original datetime object to add time to.
+        h, m, s: The amount of time to add (hours, minutes, seconds). 
+            Only hours is required, minutes and seconds are optional 
+            arguments.
+    
+    Returns: A datetime object with the specified delta from the original.
+    """
+
+    delta = timedelta(hours=h, minutes=m, seconds=s)
+    new_datetime = dt_obj + delta
+
+    return new_datetime
+
+
 def soil_data_point(prev_data, id, mode='random'):
     """Take a previous soil data point and generate the next one.
     
@@ -39,9 +57,7 @@ def soil_data_point(prev_data, id, mode='random'):
     if prev_data == None:
         date = datetime(2023, 1, 1, 6)
     else:
-        old_date = prev_data[0]
-        delta = timedelta(hours=1)
-        date = old_date + delta
+        date = next_datetime(prev_data[0], 1, 30)
 
     # Generate moisture data
     num = random.randrange(0, 1000)
@@ -101,7 +117,7 @@ def generate_weather_data(num, fname):
     """
 
     abs_fpath = create_path(fname, 'data')
-    
+
 
 if __name__ == "__main__":
     generate_moisture_data(100, "test_moisture.txt")
