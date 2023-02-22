@@ -10,7 +10,7 @@ Soil Moisture:
     DateTime,MoistureLevel,MonitorId
 
 Weather Data:
-    DateTime,Temperature,WindDirection
+    DateTime,Temperature
 
 """
 
@@ -118,9 +118,22 @@ def generate_weather_data(num, fname):
 
     abs_fpath = create_path(fname, 'data')
 
+    with open(abs_fpath, 'w') as f:
+        prev_date = datetime(2023, 1, 1, 4, 30)
+        for i in range(num):
+            # make date
+            test_date = next_datetime(prev_date, 1, 30)
+            # make temp
+            test_temperature = random.randrange(20, 40)
+
+            data_string = f"{test_date.isoformat()},{test_temperature}\n"
+            f.write(data_string)
+
+            prev_date = test_date
+
 
 if __name__ == "__main__":
     generate_moisture_data(100, "test_moisture.txt")
-    generate_weather_data(10, "test_weather.txt")
+    generate_weather_data(100, "test_weather.txt")
 
     #soil_data_point(None, 1)
