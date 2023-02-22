@@ -51,6 +51,25 @@ def soil_data_point(prev_data, id, mode='random'):
 
     return generated_data
     
+def create_path(fname, directory):
+    """Checks for existence of directory in same location as script file and 
+    returns abs Path of file. Creates the directory if it does not exist.
+    
+    Args:
+        fname: File name to append to path
+        directory: The directory   
+
+    Returns: A pathlib Path object with the absolute path of fname in directory.
+    """
+    py_file_path = Path(__file__).parent
+    new_dir_path = Path.joinpath(py_file_path, directory)
+
+    try:
+        new_dir_path.mkdir()
+    except FileExistsError:
+        pass
+
+    return Path.joinpath(new_dir_path, fname)
 
 def generate_moisture_data(num, fname):
     """Generate a set of moisture data and save to disk.
@@ -61,7 +80,7 @@ def generate_moisture_data(num, fname):
     """
 
     # File directory should be /data located same directory as .py file
-    abs_fpath = Path.joinpath(Path(__file__).parent, "data", fname)
+    abs_fpath = create_path(fname, 'data')
 
     with open(abs_fpath, 'w') as f:
         written_data_point = None
@@ -73,7 +92,7 @@ def generate_moisture_data(num, fname):
             
             written_data_point = new_data_point
 
-def generate_weather_data():
+def generate_weather_data(num, fname):
     """Generate a set of weather data and save to disk.
     
     Args:
@@ -81,8 +100,11 @@ def generate_weather_data():
         fname: The name of the file to save the data to.
     """
 
+    abs_fpath = create_path(fname, 'data')
+    
+
 if __name__ == "__main__":
     generate_moisture_data(100, "test_moisture.txt")
-    #generate_weather_data()
+    generate_weather_data(10, "test_weather.txt")
 
     #soil_data_point(None, 1)
