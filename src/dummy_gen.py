@@ -15,8 +15,13 @@ Weather Data:
 """
 
 from datetime import datetime
+from datetime import timedelta
 
-def soil_data_point(prev_data, mode='random'):
+from pathlib import Path
+
+import random
+
+def soil_data_point(prev_data, id, mode='random'):
     """Take a previous soil data point and generate the next one.
     
     Data is generated according to mode specified. 
@@ -28,13 +33,23 @@ def soil_data_point(prev_data, mode='random'):
     Args:
         prev_data: The previous data point generated. If None then use
             inital datetime value.
+        id: The id number of the "device" generating data. 
     """
-
+    # Get datetime object
     if prev_data == None:
-        date = datetime(2023, 1, 1)
+        date = datetime(2023, 1, 1, 6)
     else:
-        date = prev_data.strip(",")[0]
-    print(date)
+        old_date = prev_data[0]
+        delta = timedelta(hours=1)
+        date = old_date + delta
+
+    # Generate moisture data
+    num = random.randrange(0, 1000)
+    ran_float = num / 1000
+
+    generated_data = [date, id, ran_float]
+
+    return generated_data
     
 
 def generate_moisture_data(num, fname):
@@ -45,14 +60,18 @@ def generate_moisture_data(num, fname):
         fname: The name of the file to save the data to.
     """
 
-    with open(fname, 'w') as f:
-        current_data_point = None
+    # File directory should be /data located same directory as .py file
+    abs_fpath = Path.joinpath(Path(__file__).parent, "data", fname)
+
+    with open(abs_fpath, 'w') as f:
+        written_data_point = None
         for i in range(0, num):
-            new_data_point = soil_data_point(current_data_point)
-            f.write(new_data_point)
-
-            current_data_point = new_data_point
-
+            new_data_point = soil_data_point(written_data_point, 1)
+            data_string = f"{new_data_point[0].isoformat()},{new_data_point[1]},{new_data_point[2]}\n"
+            
+            f.write(data_string)
+            
+            written_data_point = new_data_point
 
 def generate_weather_data():
     """Generate a set of weather data and save to disk.
@@ -63,5 +82,7 @@ def generate_weather_data():
     """
 
 if __name__ == "__main__":
-    generate_moisture_data(100, "/data/test_moisture.txt")
-    generate_weather_data()
+    generate_moisture_data(100, "test_moisture.txt")
+    #generate_weather_data()
+
+    #soil_data_point(None, 1)
