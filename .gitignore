@@ -1,1 +1,4 @@
-.vscode
+# Directories to ignore
+data/
+__pycache__/
+.vscode/
