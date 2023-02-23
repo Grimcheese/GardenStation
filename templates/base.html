@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %} - GardenStation</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+    <nav>
+        <h1 class="centre">My Garden Station</h1>
+        <ul>
+            <li class="side-by-side"><a href="{{ url_for('home_page') }}">Home</a></li>
+            <li class="side-by-side"><a href="{{ url_for('weather_page') }}">Weather Data</a></li>
+            <li class="side-by-side"><a href="{{ url_for('soil_page') }}">Soil Data</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+
+</html>
