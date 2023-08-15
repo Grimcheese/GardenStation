@@ -10,9 +10,8 @@
 
 <body>
     <nav>
-        <h1 class="centre">My Garden Station</h1>
+        <h1 class="centre"><a href="{{ url_for('home_page') }}">My Garden Station</a></h1>
         <ul>
-            <li class="side-by-side"><a href="{{ url_for('home_page') }}">Home</a></li>
             <li class="side-by-side"><a href="{{ url_for('weather_page') }}">Weather Data</a></li>
             <li class="side-by-side"><a href="{{ url_for('soil_page') }}">Soil Data</a></li>
         </ul>
