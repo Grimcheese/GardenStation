@@ -1,3 +1,18 @@
 {% extends 'base.html' %}
 
 {% block title %} Weather Station {% endblock %}
+
+{% block content %}
+    <p>This page will contain current weather information recorded
+        from my weather station.
+    </p>
+
+    <h2>Current Stats</h2>
+    <ul>
+        <li>Time:</li>
+        <li>Temperature:</li>
+        <li>Humidity:</li>
+        <li>Rainfall (Last 24hour):</li>
+    </ul>
+    <h2>Interactive Timeline</h2>
+{% endblock %}

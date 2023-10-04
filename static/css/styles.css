@@ -19,3 +19,12 @@ h1.centre {
     margin: auto;
     width: 50%;
 }
+
+/* Main page content style */
+
+.content {
+    margin: auto;
+    width: 60%;
+
+    padding-top: 30px;
+}
