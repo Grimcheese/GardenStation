@@ -7,9 +7,9 @@ on:
       - main
     paths:
       - 'docs/**'
-    repository_dispatch:
+  repository_dispatch:
       types: [docs]
-    gollum:
+  gollum:
 
 jobs:
   job-sync-docs-to-wiki:
