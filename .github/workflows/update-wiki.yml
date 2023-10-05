@@ -3,9 +3,10 @@ name: "Wiki update"
 # When changes to /docs are pushed to main
 on:
   push:
-    - main
-  paths:
-    - 'docs/**'
+    branches:
+      - main
+    paths:
+      - 'docs/**'
 
 jobs:
   mirror:
