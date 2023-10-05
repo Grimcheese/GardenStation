@@ -9,9 +9,14 @@ on:
       - 'docs/**'
 
 jobs:
-  mirror:
+  job-sync-docs-to-wiki:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
       - name: Bi-directional Wiki Sync Action
         uses: newrelic/wiki-sync-action@v1.0.1
-      
+        with:
+          source: docs
+          destination: wiki
+          token: ${{ secrets.GITHUB_TOKEN }}
