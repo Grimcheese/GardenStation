@@ -1,0 +1,3 @@
+              - name: Bi-directional Wiki Sync Action
+                uses: newrelic/wiki-sync-action@v1.0.1
+            
