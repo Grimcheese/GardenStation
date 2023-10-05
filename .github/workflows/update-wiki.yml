@@ -12,24 +12,6 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v4
-        with:
-          path: GardenStation
-      - name: Checkout wiki
-        uses: actions/checkout@v4
-        with:
-          repository: "Grimcheese/GardenStation.wiki"
-          path: GardenStation.wiki
-      - name: Copy files
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "Wiki Update"
-          cp $GITHUB_WORKSPACE/GardenStation/docs/*.txt $GITHUB_WORKSPACE/GardenStation.wiki
-          cd $GITHUB_WORKSPACE/GardenStation.wiki
-          rename.ul -v .txt .md *.txt
-          git add .
-          # only commit if there are changes
-          git diff-index --quiet HEAD -- || git commit -m "sync from docs/"
-          git push
+      - name: Bi-directional Wiki Sync Action
+        uses: newrelic/wiki-sync-action@v1.0.1
       
