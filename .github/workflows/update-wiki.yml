@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: GardenStation
       - name: Checkout wiki
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: "Grimcheese/GardenStation.wiki"
           path: GardenStation.wiki
