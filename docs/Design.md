@@ -18,9 +18,9 @@ flowchart TD
 ```
 
 ## Web Server
-The web server will be run using Apache 2.4. Currently using it on a Windows installation however later the intent is to run it on a linux box vm (possibly Azure based?). 
+The web server will be run using Apache 2.4. The server should be able to be used in a standalone environment either on a single microcomputer or as a cloud based service.
 
-The back-end is developed using Flask python. The web server receives data from the sensors in the field and serves web requests to users wishing to view the data. The web-server receives HTTP POST requests containing to update the database with. A database located on the same device as the web server will contain all readings recorded and this data will then be used by the web server when serving web pages. 
+The back-end is developed using Flask python. The web server receives data from the sensors in the field and serves web requests to users wishing to view the data. The web-server receives transmissions from sensors in the field containing new readings. A database located on the same device as the web server will contain all readings recorded and this data will then be used by the web server when serving web pages. 
 
 The web server will also be used to transmit software updates to the micro-controllers so that they can be updated without having to be removed and physically updated.  
 
@@ -34,18 +34,17 @@ sequenceDiagram
     participant Web Server
     participant Database
 
-    Sensor ->> Web Server: New reading (via HTTP POST)
-    Web Server ->> Database: Store new record
-    Web Server ->> Sensor: 200 Response
+    Sensor ->> Web Server: Transmit readings
+    Web Server ->> Database: Store reading
+    Web Server ->> Sensor: Acknowledge
 ```
 
 #### Micro-Controller Update
 To enable easy updating of micro-controller software a wireless update system will be setup. This system will prevent the need to physically plug the devices into a computer to install new updates. 
 
-To conserve battery power and maintain security on the devices the devices will perform a version check with the web server. At regular intervals the devices will check the latest version number and update in this way rather than use an open port on the device that waits for updates to be pushed to it on demand.
+Looking at options for initiating update from sensors regularly or pushing updates to the sensors depending on wireless technology used.
 
-The check can be performed with the data transfer.
-
+Possible sensor initiated design:
 ```mermaid
 sequenceDiagram
     participant Sensor
@@ -60,12 +59,12 @@ sequenceDiagram
 ```
  
 ## Micro-Controllers
-
+Looking at using Arduinos for the sensors and a Raspberry Pi as the web server.
 
 ## Database
+A relational database on the web server will be used to store the readings received from the sensors in the field. This database needs to be compatible with Python, lightweight, and easily transportable for backup.
 
-
-DBMS: MySQL database with the following tables:   
+DBMS: SQLite database with the following tables:   
 - Weather records
 - Soil Moisture
 

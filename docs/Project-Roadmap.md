@@ -5,7 +5,8 @@ GardenStation has a lot of separate components that need to be worked on and com
 - [ ] A working web application
 - [ ] Functional database that can interact with the web app
 - [ ] Micro-controller software for soil moisture sensors
-- [ ] Running and testing web server on Raspberry Pi
+- [ ] Web server receiving data and serving pages
+- [ ] Running and testing web server on portable device
 # Future Feature Ideas
 - [ ] Live camera feed display
 
