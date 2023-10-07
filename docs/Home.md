@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Garden Station Project
 Garden Station is a web application that uses micro-controllers with sensors to gather data in a garden and display that data in a web application. The web server uses a LAMP stack.
 
@@ -58,3 +59,6 @@ The competencies this project demonstrates cover a variety of areas including so
 - Communication skills used to describe technical concepts
 - Project planning, management and completion
 - Familiarity with Information Security concepts used to design and develop a computer system with security in mind
+=======
+Welcome to the GardenStation wiki!
+>>>>>>> 80d87f8ae1eca3383b6218c6bd7373ad2c1451c6
