@@ -1,14 +1,19 @@
 # Roadmap 
-GardenStation has a lot of separate components that need to be worked on and completed before the project can be considered v1.0. The roadmap details those features that need to be implemented which can be turned into issues and further broken down for the backlog to work on.
+GardenStation has a lot of separate components that need to be worked on and completed before the project can be considered v1.0. The roadmap details a general overview of features that will be worked on and serves as a guide for what to expect for this project and for future development. 
 
 ## Main Features
 - [ ] A working web application
-- [ ] Functional database that can interact with the web app
-- [ ] Micro-controller software for soil moisture sensors
-- [ ] Web server receiving data and serving pages
+- [ ] Soil moisture sensors wirelessly transmitting data
+- [ ] Relational database to store data
+- [ ] GardenStation receiver to handle incoming data
+- [ ] Functional web server to serve pages/garden data
 - [ ] Running and testing web server on portable device
-# Future Feature Ideas
+# Future Work
+- [ ] Update sensors wirelessly
+- [ ] Security testing
+- [ ] Web application interface look and feel improvements
 - [ ] Live camera feed display
+- [ ] Public web site
 
 
 # Changelog
