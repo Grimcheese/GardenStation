@@ -7,7 +7,7 @@ be used to test the web app which will be used to display said data.
 The following data will be generated in the specified format.
 
 Soil Moisture:
-    DateTime,MoistureLevel,MonitorId
+    DateTime,MoistureLevel,Location,MonitorId
 
 Weather Data:
     DateTime,Temperature
@@ -39,7 +39,7 @@ def next_datetime(dt_obj, h, m=0, s=0):
     return new_datetime
 
 
-def soil_data_point(prev_data, id, mode='random'):
+def soil_data_point(prev_data, id, location, mode='random'):
     """Take a previous soil data point and generate the next one.
     
     Data is generated according to mode specified. 
@@ -57,13 +57,13 @@ def soil_data_point(prev_data, id, mode='random'):
     if prev_data == None:
         date = datetime(2023, 1, 1, 6)
     else:
-        date = next_datetime(prev_data[0], 1, 30)
+        date = next_datetime(prev_data['date'], 1, 30)
 
     # Generate moisture data
     num = random.randrange(0, 1000)
     ran_float = num / 1000
 
-    generated_data = [date, id, ran_float]
+    generated_data = {"date":date, "reading":ran_float, "location":location, "id":id}
 
     return generated_data
     
@@ -98,11 +98,16 @@ def generate_moisture_data(num, fname):
     # File directory should be /data located same directory as .py file
     abs_fpath = create_path(fname, 'data')
 
+    device_map = {0:"front-window", 1:"front-side", 2:"back-garden", 3:"front-corner"}
+
     with open(abs_fpath, 'w') as f:
         written_data_point = None
         for i in range(0, num):
-            new_data_point = soil_data_point(written_data_point, 1)
-            data_string = f"{new_data_point[0].isoformat()},{new_data_point[1]},{new_data_point[2]}\n"
+            dev_id = random.randrange(0, 4)
+            dev_location = device_map[dev_id]
+
+            new_data_point = soil_data_point(written_data_point, dev_id, dev_location)
+            data_string = f"{new_data_point['date'].isoformat()},{new_data_point['reading']},{new_data_point['location']},{new_data_point['id']}\n"
             
             f.write(data_string)
             
@@ -135,5 +140,3 @@ def generate_weather_data(num, fname):
 if __name__ == "__main__":
     generate_moisture_data(100, "test_moisture.txt")
     generate_weather_data(100, "test_weather.txt")
-
-    #soil_data_point(None, 1)
