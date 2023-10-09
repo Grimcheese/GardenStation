@@ -101,6 +101,9 @@ def generate_moisture_data(num, fname):
     device_map = {0:"front-window", 1:"front-side", 2:"back-garden", 3:"front-corner"}
 
     with open(abs_fpath, 'w') as f:
+        # Create header
+        f.write("timestamp,moisture_reading,location,device_id\n")
+
         written_data_point = None
         for i in range(0, num):
             dev_id = random.randrange(0, 4)
