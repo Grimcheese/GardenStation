@@ -10,6 +10,13 @@ root_dir = Path(__file__).parents[1]
 db_path = root_dir.joinpath("db", DATABASE_FILENAME)
 schema_path = root_dir.joinpath("db", SCHEMA_FILENAME)
 
+def open_standard_connection(database=db_path):
+    """Create a new connection to the specified database."""
+    
+    connection = sqlite3.connect(database)
+    return connection
+
+
 def open_row_connection(database=db_path):
     """Open a connection for retrieving data."""
 
@@ -17,6 +24,19 @@ def open_row_connection(database=db_path):
     connection.row_factory = sqlite3.Row
 
     return connection
+
+
+def create_from_schema(database=db_path, sc_path=schema_path):
+    """Create a new database using the specified schema."""
+    
+    connection = open_standard_connection(database)
+
+    with open(sc_path) as f:
+        connection.executescript(f.read())
+    
+    connection.commit()
+    connection.close()
+
 
 def insert_moisture_record(timestamp, reading, location, device_id, database=db_path):
     """Create a new record in the moisture table.
@@ -64,5 +84,7 @@ def retrieve_moisture_timestamp_range(start, end, database=db_path):
 
     connection = open_row_connection()
 
+    # TODO Get records based on timestamp range
+    
+    connection.close()
 
-if __name__ == "__main__":
