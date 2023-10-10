@@ -3,6 +3,8 @@
 import sqlite3
 from pathlib import Path
 
+import database
+
 root_dir = Path(__file__).parents[1]
 print(root_dir)
 
@@ -25,10 +27,9 @@ with open(test_moisture_path, 'r') as f:
     for line in lines[1:]:
         separated = line.strip().split(",")
         print(separated)
-        # Insert dummy readings read from file
-        cur.execute("INSERT INTO moisture (timestamp, moisture, location, device_id) VALUES (?, ?, ?, ?)",
-                    (f"{separated[0]}", separated[1], f"{separated[2]}", separated[3])
-                    )
+
+        database.insert_moisture_record(f"{separated[0]}", separated[1], f"{separated[2]}", separated[3])
+
 
 connection.commit()
 connection.close()
