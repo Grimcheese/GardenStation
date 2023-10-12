@@ -2,30 +2,61 @@ import pytest
 from pathlib import Path
 
 from ..webserver import init_db
+from ..webserver import database
 
 
 class TestDatabase():
 
     @pytest.fixture
     def root_dir(self):
-        return Path(__file__.parent[1])
+        return Path(__file__).parents[1]
 
 
     @pytest.fixture
+    def test_db_path(self, root_dir):
+        return root_dir.joinpath("db", "test.db")
+
+    @pytest.fixture
     def test_moisture_data(self, root_dir):
-        test_data = root_dir.joinpath("misc", "src", "data", "test_moisture")
+        test_data = root_dir.joinpath("misc", "src", "data", "test_moisture.txt")
         return test_data
     
 
     @pytest.fixture
-    def setup_database(self):
-        print("\nSetting up database...")
+    def setup_empty_database(self):
+        print("\nSetting up empty database...")
     
         # Create new empty database
         init_db.run_script("test_database.db")
         
 
-    def test_insert(self, setup_database):
-        print("Testing")
+    @pytest.fixture
+    def setup_dummy_database(self, root_dir, test_moisture_data):
+        print("\nSetting up database with generated moisture data...")
+
+        init_db.run_script("test_database.db", test_moisture_data)
+
+
+    def test_create_from_schema(self, test_db_path):
+        """Create a new database using a schema file."""
+        pass
+
+
+    def test_retrieve_all_records(self, test_moisture_data, test_db_path, setup_dummy_database):
+        records = database.get_all_moisture(test_db_path)
+
+        for record in records:
+            print(record)
+        
+        lines = []
+        # Get each line from the test data file
+        with open(test_moisture_data, 'r') as f:
+            for line in f.readlines():
+                lines.append(line)
+
+        assert len(lines) == len(records) + 1
+
+    def test_insert(self):
+        """Insert moisture table records."""
         pass
 

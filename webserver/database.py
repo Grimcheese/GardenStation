@@ -1,6 +1,7 @@
 """Provides a library of methods to access the database"""
 
 import sqlite3
+import datetime
 from pathlib import Path
 
 DATABASE_FILENAME = "database.db"
@@ -37,6 +38,27 @@ def create_from_schema(database=db_path, sc_path=schema_path):
     connection.commit()
     connection.close()
 
+def insert_record(table, database=db_path, **column_values):
+    connection = open_standard_connection(database)
+    cursor = connection.cursor()
+
+    # Get column names from table
+    """
+    cursor.execute("SELECT * FROM {table}")
+    columns = [description[0] for description in cursor.description]
+    
+    """
+    values = []
+    for key in column_values.keys():
+        values.append("?")
+    
+    # TODO Sanitise values in column_values
+    query = f"INSERT INTO {table} ({', '.join(column_values.keys())}) VALUES ({', '.join(values)})"
+    data = tuple(column_values.values())
+
+    cursor.execute(query, data)
+    connection.commit()
+    connection.close()
 
 def insert_moisture_record(timestamp, reading, location, device_id, database=db_path):
     """Create a new record in the moisture table.
@@ -50,41 +72,45 @@ def insert_moisture_record(timestamp, reading, location, device_id, database=db_
             variable.
     
     """
-    connection = sqlite3.connect(database)
+    connection = open_standard_connection(database)
     
     # TODO VALIDATE variables before using them in query
     
     cur = connection.cursor()
-    cur.execute("INSERT INTO moisture (timestamp, moisture, location, device_id) VALUES (?, ?, ?, ?)",
+    cur.execute("INSERT INTO moisture_readings (timestamp, moisture, location, device_id) VALUES (?, ?, ?, ?)",
                     (timestamp, reading, location, device_id)
                 )
     
     connection.commit()
     connection.close()
 
-def get_all_moisture(database=db_path):
+def get_all_moisture_from_device(device_id, database=db_path):
     """Retrieve all moisture records from the specified database."""
     
     connection = open_row_connection()
+    cursor = connection.cursor()
 
-    records = connection.execute("SELECT * FROM moisture").fetchall()
+    cursor.execute(f"SELECT * FROM moisture WHERE device_id = {device_id}")
+    
+    # Convert rows to dictionary key:value pairs
+    results = [dict(row) for row in cursor.fetchall()]
     connection.close()
 
-    return records
+    return results
 
-def retrieve_moisture_timestamp_range(start, end, database=db_path):
-    """Retrieve moisture records from a specified date/time range.
+def get_moisture_from_device_range(device, start, end, database=db_path):
+    """Get all moisture readings from a device within a datetime range."""
     
-    Args:
-        start: The starting timestamp for the range.
-        end: The ending timestamp for the range (inclusive).
-
-    Returns: List of all records from the database that match the range. 
-    """
-
     connection = open_row_connection()
+    cursor = connection.cursor()
 
-    # TODO Get records based on timestamp range
+    query = f"SELECT * FROM moisture WHERE device_id IS {device} \
+    AND timestamp >= start AND timestamp <= end"
     
+    cursor.execute(query)
+
+    results = [dict(row) for row in cursor.fetchall()]
     connection.close()
+    
+    return results
 

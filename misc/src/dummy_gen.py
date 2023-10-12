@@ -67,18 +67,20 @@ def soil_data_point(prev_data, id, location, mode='random'):
 
     return generated_data
     
-def create_path(fname, directory):
+def create_path(fname, directory, root_dir=Path(__file__).parent):
     """Checks for existence of directory in same location as script file and 
     returns abs Path of file. Creates the directory if it does not exist.
     
     Args:
         fname: File name to append to path
         directory: The directory   
+        root_dir: The root directory to create the new directory/file in.
+            Default argument is to the same directory as this file.
 
     Returns: A pathlib Path object with the absolute path of fname in directory.
     """
-    py_file_path = Path(__file__).parent
-    new_dir_path = Path.joinpath(py_file_path, directory)
+
+    new_dir_path = Path.joinpath(root_dir, directory)
 
     try:
         new_dir_path.mkdir()
@@ -140,6 +142,9 @@ def generate_weather_data(num, fname):
             prev_date = test_date
 
 
-if __name__ == "__main__":
+def main():
     generate_moisture_data(100, "test_moisture.txt")
     generate_weather_data(100, "test_weather.txt")
+
+if __name__ == "__main__":
+    main()

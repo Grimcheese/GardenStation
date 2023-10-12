@@ -1,9 +1,15 @@
-DROP TABLE IF EXISTS moisture;
+DROP TABLE IF EXISTS moisture_readings;
+DROP TABLE IF EXISTS sensors;
 
-CREATE TABLE moisture (
+CREATE TABLE moisture_readings (
     reading_id INTEGER PRIMARY KEY AUTOINCREMENT,
     timestamp TEXT NOT NULL,
     moisture REAL NOT NULL,
     location TEXT NOT NULL,
     device_id INT NOT NULL
+);
+
+CREATE TABLE sensors (
+    device_id INTEGER PRIMARY KEY,
+    software_version TEXT
 );
