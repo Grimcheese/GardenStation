@@ -32,7 +32,7 @@ def setup_script(db_name=None):
     
 
 
-def execute(moisture_test_data=None):
+def execute(create_new, moisture_test_data=None):
     print(f"Root directory used: {root_dir}")
     print(f"Database file being used: {db_path}")
 
@@ -40,18 +40,22 @@ def execute(moisture_test_data=None):
 
     # Initialise a new database
     if db_path != None:
-        db = Database(path=db_path)
+        db = Database(create_new, path=db_path)
     else:
-        db = Database()
+        db = Database(create_new)
 
     if moisture_test_data != None:
         # Put data into new database
-        insert_moisture_test_data(db, moisture_test_data)    
+        insert_moisture_test_data(db, moisture_test_data)
+
+    return db    
 
 
-def run_script(db_name=None, moisture_data=None):
+def run_script(initialise, db_name=None, moisture_data=None):
     setup_script(db_name)
-    execute(moisture_data)
+    db = execute(initialise, moisture_data)
+
+    return db
 
 if __name__ == "__main__":
-    run_script()
+    run_script(True)

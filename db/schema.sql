@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS sensors;
 
 CREATE TABLE moisture_readings (
     reading_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    timestamp TEXT NOT NULL,
+    timestamp TIMESTAMP NOT NULL,
     moisture REAL NOT NULL,
     location TEXT NOT NULL,
     device_id INT NOT NULL

@@ -15,10 +15,11 @@ schema_path = root_dir.joinpath("db", SCHEMA_FILENAME)
 
 class Database:
 
-    def __init__(self, path=db_path, schema=schema_path):
+    def __init__(self, initialise=False, path=db_path, schema=schema_path):
         self.database = path
 
-        self._create_from_schema(schema)
+        if initialise:
+            self._create_from_schema(schema)
 
     def open_standard_connection(self):
         """Create a new connection to the specified database."""
@@ -39,9 +40,9 @@ class Database:
     def _create_from_schema(self, schema=schema_path):
         """Create a new database using the specified schema."""
         
-        if db_path.exists():
-            db_path.unlink() # Ensure a new database is created
-        connection = self.open_standard_connection()
+        if self.database.exists():
+            self.database.unlink() # Ensure a new database is created
+        connection = sqlite3.connect(self.database)
 
         with open(schema) as f:
             connection.executescript(f.read())

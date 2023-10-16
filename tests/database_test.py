@@ -2,7 +2,7 @@ import pytest
 from pathlib import Path
 
 from ..webserver import init_db
-from ..webserver import database
+from ..webserver.database import Database
 
 
 class TestDatabase():
@@ -11,10 +11,13 @@ class TestDatabase():
     def root_dir(self):
         return Path(__file__).parents[1]
 
+    @pytest.fixture
+    def db_path(self):
+        return "test_database.db"
 
     @pytest.fixture
-    def test_db_path(self, root_dir):
-        return root_dir.joinpath("db", "test.db")
+    def test_db_path(self, root_dir, db_path):
+        return root_dir.joinpath("db", db_path)
 
     @pytest.fixture
     def test_moisture_data(self, root_dir):
@@ -23,27 +26,28 @@ class TestDatabase():
     
 
     @pytest.fixture
-    def setup_empty_database(self):
+    def setup_empty_database(self, db_path):
         print("\nSetting up empty database...")
     
         # Create new empty database
-        init_db.run_script("test_database.db")
-        
+        database = init_db.run_script(True, db_path)
+        return database
 
     @pytest.fixture
-    def setup_dummy_database(self, root_dir, test_moisture_data):
+    def setup_dummy_database(self, db_path, root_dir, test_moisture_data):
         print("\nSetting up database with generated moisture data...")
 
-        init_db.run_script("test_database.db", test_moisture_data)
+        database = init_db.run_script(True, db_path, test_moisture_data)
+        return database
 
-
-    def test_create_from_schema(self, test_db_path):
+    def test_(self, test_db_path):
         """Create a new database using a schema file."""
         pass
 
 
     def test_retrieve_all_records(self, test_moisture_data, test_db_path, setup_dummy_database):
-        records = database.get_all_moisture_from_device(0, test_db_path)
+        database = setup_dummy_database
+        records = database.get_all_moisture_from_device(0)
 
         for record in records:
             print(record)
