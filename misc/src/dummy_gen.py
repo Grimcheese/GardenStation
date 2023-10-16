@@ -112,7 +112,7 @@ def generate_moisture_data(num, fname):
             dev_location = device_map[dev_id]
 
             new_data_point = soil_data_point(written_data_point, dev_id, dev_location)
-            data_string = f"{new_data_point['date'].isoformat()},{new_data_point['reading']},{new_data_point['location']},{new_data_point['id']}\n"
+            data_string = f"{new_data_point['date'].isoformat(' ')},{new_data_point['reading']},{new_data_point['location']},{new_data_point['id']}\n"
             
             f.write(data_string)
             
