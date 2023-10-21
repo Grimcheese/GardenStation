@@ -102,7 +102,7 @@ class Database:
         connection = self.open_row_connection()
         cursor = connection.cursor()
 
-        cursor.execute(f"SELECT * FROM moisture_readings WHERE device_id = {device_id}")
+        cursor.execute(f"SELECT * FROM moisture_readings WHERE device_id = (?)", (device_id,))
         
         # Convert rows to dictionary key:value pairs
         results = [dict(row) for row in cursor.fetchall()]
@@ -111,15 +111,23 @@ class Database:
         return results
 
     def get_moisture_from_device_range(self, device, start, end):
-        """Get all moisture readings from a device within a datetime range."""
+        """Get all moisture readings from a device within a datetime range.
+        
+        Args:
+            device: The ID number of the device to query results from.
+            start: Starting datetime for the range being searched. As a String in
+                iso date time format.
+            end: Ending datetime for the range being searched. As a String in
+                iso date time format.
+        """
         
         connection = self.open_row_connection()
         cursor = connection.cursor()
 
-        query = f"SELECT * FROM moisture WHERE device_id IS {device} \
-        AND timestamp >= {start} AND timestamp <= {end}"
+        query = f"SELECT * FROM moisture_readings WHERE device_id IS (?) \
+        AND timestamp >= (?) AND timestamp <= (?)"
         
-        cursor.execute(query)
+        cursor.execute(query, (device, start, end))
 
         results = [dict(row) for row in cursor.fetchall()]
         connection.close()

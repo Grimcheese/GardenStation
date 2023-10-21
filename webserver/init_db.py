@@ -18,7 +18,7 @@ def insert_moisture_test_data(db, test_data_file):
         # skip the header line
         for line in lines[1:]:
             separated = line.strip().split(",")
-            print(separated)
+            #print(separated)
 
             db.insert_moisture_record(f"{separated[0]}", separated[1], f"{separated[2]}", separated[3])
 
