@@ -32,6 +32,19 @@ class TestDatabase():
     
 
     @pytest.fixture
+    def get_test_data(self, test_moisture_data):
+        print("\nGet raw test data...")
+        
+        lines = []
+        with open(test_moisture_data, 'r') as f:
+            f.readline()
+            for line in f.readlines():
+                lines.append(line)
+                
+        return lines
+    
+
+    @pytest.fixture
     def setup_empty_database(self, db_path):
         print("\nSetting up empty database...")
     
@@ -46,38 +59,51 @@ class TestDatabase():
         database = init_db.run_script(True, db_path, test_moisture_data)
         return database
 
+
+    """Unit tests"""
+
+
     def test_(self, test_db_path):
         """Create a new database using a schema file."""
         pass
 
 
-    def test_retrieve_all_records(self, test_moisture_data, test_db_path, setup_dummy_database):
+    def test_retrieve_all_records(self, test_moisture_data, setup_dummy_database, get_test_data):
         print("\nCheck retrieval of all records from specified device...\n")
         
         database = setup_dummy_database
-        records = database.get_all_moisture_from_device(0)
-
-        lines = []
+        """
         # Get each line from the test data file
         with open(test_moisture_data, 'r') as f:
             for line in f.readlines():
                 if line.strip().split(',')[3] == '0':
                     lines.append(line)
-
-        # Get correct number of rows based on device id
-        assert len(lines) == len(records)
+           """ 
+        lines = get_test_data
+        
+        # Compare number of records in data file to records retrieved from db for each device
+        for device_id in range(0, 4):
+            device_lines = []
+            for line in lines:
+                if line.strip().split(',')[3] == f'{device_id}':
+                    device_lines.append(line)
+            
+            records = database.get_all_moisture_from_device(device_id)
+            assert len(device_lines) == len(records)
 
     
-    def test_retrieve_date_range(self, test_moisture_data, setup_dummy_database, num_of_devices):
+    def test_retrieve_date_range(self, setup_dummy_database, num_of_devices, get_test_data):
         print("\nCheck retrieval based on date range...")
         
         database = setup_dummy_database
+        raw_data = get_test_data
+        
         
         #Test data starts from 1/1/2023 6AM ends at 7/1/2023 10:30AM for 100 records
-        minDate = datetime.datetime(2023, 1, 1, 6)
-        maxDate = datetime.datetime(2023, 1, 7, 11)
+        minDate = raw_data[0].split(",")[0]
+        maxDate = raw_data[-1].split(",")[0]
         
-        # Get records from all devices
+        # Get records from all devices for entire date range
         records = []
         for i in range(num_of_devices):
             print(f"Arguments: \n\tDevice: {i}\n\tStart: {minDate}   End: {maxDate}")
@@ -85,8 +111,18 @@ class TestDatabase():
             print(f"Device: {i}\n\tRecords: {device_records}")
             records.extend(device_records)
 
-        assert len(records) == 100
+        assert len(records) == len(raw_data)
+        
+        # Get records from outside date range
+        records = []
+        for i in range(num_of_devices):
+            print(datetime.timedelta(days=5))
+            below_range = datetime.datetime.fromisoformat(minDate) - datetime.timedelta(days=5)
+            max_range = datetime.datetime.fromisoformat(minDate) - datetime.timedelta(hours=1)
+            device_records = database.get_moisture_from_device_range(i, below_range, max_range)
+            records.extend(device_records)
 
+        assert len(records) == 0
 
     def test_insert(self):
         """Insert moisture table records."""
