@@ -62,10 +62,32 @@ class TestDatabase():
 
     """Unit tests"""
 
+    def test_insert(self, get_test_data, setup_empty_database):
+        """Insert moisture table records."""
+        
+        print("\nCheck insertion of single record into database")
+        
+        database = setup_empty_database
+        test_data = get_test_data
+        # Test insertion of each record
+        for i in range(len(test_data)):
+            line = test_data[i].strip().split(",")
+            
+            timestamp = line[0]
+            reading = line[1]
+            location = line[2]
+            device_id = line[3]
+            
+            database.insert_record("moisture_readings", timestamp=timestamp, moisture=reading, location=location, device_id=device_id)
 
-    def test_(self, test_db_path):
-        """Create a new database using a schema file."""
-        pass
+            check_record = database.get_moisture_from_timestamp(device_id, timestamp)
+            assert len(check_record) == 1
+            print(check_record)
+            
+            assert check_record[0]['timestamp'] == timestamp
+            assert f"{check_record[0]['moisture']}" == reading
+            assert check_record[0]['location'] == location
+            assert f"{check_record[0]['device_id']}" == device_id
 
 
     def test_retrieve_all_records(self, test_moisture_data, setup_dummy_database, get_test_data):
@@ -144,7 +166,4 @@ class TestDatabase():
         assert len(records) == 1
 
 
-    def test_insert(self):
-        """Insert moisture table records."""
-        pass
 

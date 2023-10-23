@@ -14,22 +14,35 @@ db_path = root_dir.joinpath("db", DATABASE_FILENAME)
 schema_path = root_dir.joinpath("db", SCHEMA_FILENAME)
 
 class Database:
+    """References and interacts with an SQLite database."""
 
     def __init__(self, initialise=False, path=db_path, schema=schema_path):
+        """Initialise the Database with the path to use for the database and schema.
+        
+        By default no new database will be created, instead using a database file
+        in the db directory called database.db.
+        
+        Args:
+            initialise: Set to False by default. Specifies if a new database should
+                be created using the schema file on creation of Database object.
+            path: The Path of the database file this Database will interact with.
+            schema: Path of the schema file to use when initialising a new database.
+        """
+        
         self.database = path
 
         if initialise:
             self._create_from_schema(schema)
 
     def open_standard_connection(self):
-        """Create a new connection to the specified database."""
+        """Get a new connection to the database."""
         
         connection = sqlite3.connect(self.database)
         return connection
 
 
     def open_row_connection(self):
-        """Open a connection for retrieving data."""
+        """Get a new connection to be used for retrieving rows from the database."""
 
         connection = sqlite3.connect(self.database)
         connection.row_factory = sqlite3.Row
@@ -38,7 +51,7 @@ class Database:
 
 
     def _create_from_schema(self, schema=schema_path):
-        """Create a new database using the specified schema."""
+        """Create a new database using the schema file."""
         
         if self.database.exists():
             self.database.unlink() # Ensure a new database is created
@@ -51,20 +64,25 @@ class Database:
         connection.close()
 
     def insert_record(self, table, **column_values):
+        """Insert a single new record into the database.
+        
+        This method can take an arbitrary number of column:value key pairs to 
+        allow new rows to be inserted without specifying a value for each column.
+        
+        Args:
+            table: The table to insert the new record into.
+            column_values: Key:Value pair representing the column name and desired
+                value to insert into the database.
+        """
+        
         connection = self.open_standard_connection()
         cursor = connection.cursor()
 
         # Get column names from table
-        """
-        cursor.execute("SELECT * FROM {table}")
-        columns = [description[0] for description in cursor.description]
-        
-        """
         values = []
         for key in column_values.keys():
             values.append("?")
         
-        # TODO Sanitise values in column_values
         query = f"INSERT INTO {table} ({', '.join(column_values.keys())}) VALUES ({', '.join(values)})"
         data = tuple(column_values.values())
 
@@ -80,14 +98,9 @@ class Database:
             reading: The moisture level recorded in the soil.
             location: The name of the location where the reading was taken.
             device_id: ID number of the device that took the reading.
-            database: Path to the database file. Default value is set by global
-                variable.
-        
         """
         connection = self.open_standard_connection()
-        
-        # TODO VALIDATE variables before using them in query
-        
+                
         cur = connection.cursor()
         cur.execute("INSERT INTO moisture_readings (timestamp, moisture, location, device_id) VALUES (?, ?, ?, ?)",
                         (timestamp, reading, location, device_id)
@@ -95,9 +108,34 @@ class Database:
         
         connection.commit()
         connection.close()
+        
+    def get_moisture_from_timestamp(self, device_id, timestamp):
+        """Retrieve a single record based on device_id and timestamp.
+        
+        Args:
+            device_id: The ID number of the device to retrieve records from.
+            timestamp: The timestamp to use to search the database with.
+        """
+
+        connection = self.open_row_connection()
+        cursor = connection.cursor()
+        
+        query = "SELECT * FROM moisture_readings WHERE device_id = (?) \
+            AND timestamp = (?)"
+        cursor.execute(query, (device_id, timestamp))
+        results = [dict(row) for row in cursor.fetchall()]
+        connection.close()
+        
+        return results
+
 
     def get_all_moisture_from_device(self, device_id):
-        """Retrieve all moisture records from the specified database."""
+        """Retrieve all moisture records from the specified database.
+        
+        Args:
+            device_id: The ID number of the device which records are to be
+                retrieved.
+        """
         
         connection = self.open_row_connection()
         cursor = connection.cursor()
