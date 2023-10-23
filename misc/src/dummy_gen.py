@@ -7,7 +7,7 @@ be used to test the web app which will be used to display said data.
 The following data will be generated in the specified format.
 
 Soil Moisture:
-    DateTime,MoistureLevel,MonitorId
+    DateTime,MoistureLevel,Location,MonitorId
 
 Weather Data:
     DateTime,Temperature
@@ -39,7 +39,7 @@ def next_datetime(dt_obj, h, m=0, s=0):
     return new_datetime
 
 
-def soil_data_point(prev_data, id, mode='random'):
+def soil_data_point(prev_data, id, location, mode='random'):
     """Take a previous soil data point and generate the next one.
     
     Data is generated according to mode specified. 
@@ -57,28 +57,30 @@ def soil_data_point(prev_data, id, mode='random'):
     if prev_data == None:
         date = datetime(2023, 1, 1, 6)
     else:
-        date = next_datetime(prev_data[0], 1, 30)
+        date = next_datetime(prev_data['date'], 1, 30)
 
     # Generate moisture data
     num = random.randrange(0, 1000)
     ran_float = num / 1000
 
-    generated_data = [date, id, ran_float]
+    generated_data = {"date":date, "reading":ran_float, "location":location, "id":id}
 
     return generated_data
     
-def create_path(fname, directory):
+def create_path(fname, directory, root_dir=Path(__file__).parent):
     """Checks for existence of directory in same location as script file and 
     returns abs Path of file. Creates the directory if it does not exist.
     
     Args:
         fname: File name to append to path
         directory: The directory   
+        root_dir: The root directory to create the new directory/file in.
+            Default argument is to the same directory as this file.
 
     Returns: A pathlib Path object with the absolute path of fname in directory.
     """
-    py_file_path = Path(__file__).parent
-    new_dir_path = Path.joinpath(py_file_path, directory)
+
+    new_dir_path = Path.joinpath(root_dir, directory)
 
     try:
         new_dir_path.mkdir()
@@ -98,11 +100,19 @@ def generate_moisture_data(num, fname):
     # File directory should be /data located same directory as .py file
     abs_fpath = create_path(fname, 'data')
 
+    device_map = {0:"front-window", 1:"front-side", 2:"back-garden", 3:"front-corner"}
+
     with open(abs_fpath, 'w') as f:
+        # Create header
+        f.write("timestamp,moisture_reading,location,device_id\n")
+
         written_data_point = None
         for i in range(0, num):
-            new_data_point = soil_data_point(written_data_point, 1)
-            data_string = f"{new_data_point[0].isoformat()},{new_data_point[1]},{new_data_point[2]}\n"
+            dev_id = random.randrange(0, 4)
+            dev_location = device_map[dev_id]
+
+            new_data_point = soil_data_point(written_data_point, dev_id, dev_location)
+            data_string = f"{new_data_point['date'].isoformat(' ')},{new_data_point['reading']},{new_data_point['location']},{new_data_point['id']}\n"
             
             f.write(data_string)
             
@@ -132,8 +142,9 @@ def generate_weather_data(num, fname):
             prev_date = test_date
 
 
-if __name__ == "__main__":
+def main():
     generate_moisture_data(100, "test_moisture.txt")
     generate_weather_data(100, "test_weather.txt")
 
-    #soil_data_point(None, 1)
+if __name__ == "__main__":
+    main()

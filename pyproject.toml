@@ -13,6 +13,11 @@ plotly = "^5.16.0"
 kaleido = "0.2.1"
 
 
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.2"
+coverage = "^7.3.2"
+pytest-cov = "^4.1.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
