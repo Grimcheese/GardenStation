@@ -12,13 +12,11 @@ class TestDatabase():
     def root_dir(self):
         return Path(__file__).parents[1]
 
+
     @pytest.fixture
     def db_path(self):
         return "test_database.db"
-
-    @pytest.fixture
-    def test_db_path(self, root_dir, db_path):
-        return root_dir.joinpath("db", db_path)
+    
 
     @pytest.fixture
     def test_moisture_data(self, root_dir):
@@ -82,7 +80,6 @@ class TestDatabase():
 
             check_record = database.get_moisture_from_timestamp(device_id, timestamp)
             assert len(check_record) == 1
-            print(check_record)
             
             assert check_record[0]['timestamp'] == timestamp
             assert f"{check_record[0]['moisture']}" == reading
