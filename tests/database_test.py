@@ -113,16 +113,36 @@ class TestDatabase():
 
         assert len(records) == len(raw_data)
         
-        # Get records from outside date range
+        # Get records from outside date range (before first)
         records = []
         for i in range(num_of_devices):
-            print(datetime.timedelta(days=5))
-            below_range = datetime.datetime.fromisoformat(minDate) - datetime.timedelta(days=5)
-            max_range = datetime.datetime.fromisoformat(minDate) - datetime.timedelta(hours=1)
-            device_records = database.get_moisture_from_device_range(i, below_range, max_range)
+            lower_bound = datetime.datetime.fromisoformat(minDate) - datetime.timedelta(days=5)
+            upper_bound = datetime.datetime.fromisoformat(minDate) - datetime.timedelta(hours=1)
+            device_records = database.get_moisture_from_device_range(i, lower_bound, upper_bound)
             records.extend(device_records)
 
         assert len(records) == 0
+        
+        # Get records from outside date range (after last)
+        records = []
+        for i in range(num_of_devices):
+            lower_bound = datetime.datetime.fromisoformat(maxDate) + datetime.timedelta(hours=1)
+            upper_bound = datetime.datetime.fromisoformat(maxDate) + datetime.timedelta(days=365)
+            device_records = database.get_moisture_from_device_range(i, lower_bound, upper_bound)
+            records.extend(device_records)
+            
+        assert len(records) == 0
+        
+        # Get first record
+        records = []
+        for i in range(num_of_devices):
+            lower_bound = datetime.datetime.fromisoformat(minDate)
+            upper_bound = datetime.datetime.fromisoformat(minDate) + datetime.timedelta(minutes=10)
+            device_records = database.get_moisture_from_device_range(i, lower_bound, upper_bound)
+            records.extend(device_records)
+            
+        assert len(records) == 1
+
 
     def test_insert(self):
         """Insert moisture table records."""
