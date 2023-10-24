@@ -29,9 +29,10 @@ flowchart TD
 ```
 
 # Wiki Contents Page
-[[Goals/Roadmap | Project-Roadmap]]  
-[[Design | Design]]  
-[[Hardware | Hardware]]  
+### [[Goals/Roadmap | Project-Roadmap]]  
+### [[Design | Design]]  
+### [[Hardware | Hardware]]
+### [[Database API | Database]]  
 
 # Purpose
 This aim of this project is to allow me to monitor the current weather conditions and state of my garden. Using soil moisture data I can more accurately respond in real time to plants in distress and adjust irrigation timings at a more granular level and make better use of the limited water resources we have. 
