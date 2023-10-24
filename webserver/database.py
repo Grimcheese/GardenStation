@@ -77,7 +77,7 @@ class Database:
                 value to insert into the database.
         """
         
-        connection = self.open_standard_connection()
+        connection = self._open_standard_connection()
         cursor = connection.cursor()
 
         # Get column names from table
@@ -114,7 +114,7 @@ class Database:
             timestamp: The timestamp to use to search the database with.
         """
 
-        connection = self.open_row_connection()
+        connection = self._open_row_connection()
         cursor = connection.cursor()
         
         query = "SELECT * FROM moisture_readings WHERE device_id = (?) \
@@ -134,7 +134,7 @@ class Database:
                 retrieved.
         """
         
-        connection = self.open_row_connection()
+        connection = self._open_row_connection()
         cursor = connection.cursor()
 
         cursor.execute(f"SELECT * FROM moisture_readings WHERE device_id = (?)", (device_id,))
@@ -156,7 +156,7 @@ class Database:
                 iso date time format.
         """
         
-        connection = self.open_row_connection()
+        connection = self._open_row_connection()
         cursor = connection.cursor()
 
         query = f"SELECT * FROM moisture_readings WHERE device_id IS (?) \
