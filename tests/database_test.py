@@ -76,7 +76,7 @@ class TestDatabase():
             location = line[2]
             device_id = line[3]
             
-            database.insert_record("moisture_readings", timestamp=timestamp, moisture=reading, location=location, device_id=device_id)
+            database._insert_record("moisture_readings", timestamp=timestamp, moisture=reading, location=location, device_id=device_id)
 
             check_record = database.get_moisture_from_timestamp(device_id, timestamp)
             assert len(check_record) == 1
@@ -85,6 +85,10 @@ class TestDatabase():
             assert f"{check_record[0]['moisture']}" == reading
             assert check_record[0]['location'] == location
             assert f"{check_record[0]['device_id']}" == device_id
+
+
+    def test_moisture_insert(self, get_test_data, setup_empty_database):
+        pass
 
 
     def test_retrieve_all_records(self, test_moisture_data, setup_dummy_database, get_test_data):
