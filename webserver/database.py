@@ -34,14 +34,15 @@ class Database:
         if initialise:
             self._create_from_schema(schema)
 
-    def open_standard_connection(self):
+
+    def _open_standard_connection(self):
         """Get a new connection to the database."""
         
         connection = sqlite3.connect(self.database)
         return connection
 
 
-    def open_row_connection(self):
+    def _open_row_connection(self):
         """Get a new connection to be used for retrieving rows from the database."""
 
         connection = sqlite3.connect(self.database)
@@ -63,7 +64,8 @@ class Database:
         connection.commit()
         connection.close()
 
-    def insert_record(self, table, **column_values):
+
+    def _insert_record(self, table, **column_values):
         """Insert a single new record into the database.
         
         This method can take an arbitrary number of column:value key pairs to 
@@ -75,7 +77,7 @@ class Database:
                 value to insert into the database.
         """
         
-        connection = self.open_standard_connection()
+        connection = self._open_standard_connection()
         cursor = connection.cursor()
 
         # Get column names from table
@@ -90,6 +92,7 @@ class Database:
         connection.commit()
         connection.close()
 
+
     def insert_moisture_record(self, timestamp, reading, location, device_id):
         """Create a new record in the moisture table.
         
@@ -99,16 +102,10 @@ class Database:
             location: The name of the location where the reading was taken.
             device_id: ID number of the device that took the reading.
         """
-        connection = self.open_standard_connection()
-                
-        cur = connection.cursor()
-        cur.execute("INSERT INTO moisture_readings (timestamp, moisture, location, device_id) VALUES (?, ?, ?, ?)",
-                        (timestamp, reading, location, device_id)
-                    )
         
-        connection.commit()
-        connection.close()
-        
+        self._insert_record("moisture_readings", timestamp=timestamp, moisture=reading, location=location, device_id=device_id)
+       
+       
     def get_moisture_from_timestamp(self, device_id, timestamp):
         """Retrieve a single record based on device_id and timestamp.
         
@@ -117,7 +114,7 @@ class Database:
             timestamp: The timestamp to use to search the database with.
         """
 
-        connection = self.open_row_connection()
+        connection = self._open_row_connection()
         cursor = connection.cursor()
         
         query = "SELECT * FROM moisture_readings WHERE device_id = (?) \
@@ -137,7 +134,7 @@ class Database:
                 retrieved.
         """
         
-        connection = self.open_row_connection()
+        connection = self._open_row_connection()
         cursor = connection.cursor()
 
         cursor.execute(f"SELECT * FROM moisture_readings WHERE device_id = (?)", (device_id,))
@@ -159,7 +156,7 @@ class Database:
                 iso date time format.
         """
         
-        connection = self.open_row_connection()
+        connection = self._open_row_connection()
         cursor = connection.cursor()
 
         query = f"SELECT * FROM moisture_readings WHERE device_id IS (?) \

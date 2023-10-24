@@ -16,7 +16,7 @@ Initially the web page should only be accessible to local traffic so the data ca
 
 This document is intended to give you instructions on what you need to get this project running. For a more in depth look at the purpose, design, functionality and future improvements the wiki contains further information. 
 
-# Funcionality
+# Functionality
 
 # Requirements
 
