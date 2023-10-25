@@ -16,7 +16,7 @@ jobs:
           python-version: 3.10
       
       - name: cache poetry install
-        uses: action/cache@v4
+        uses: action/cache@v3
         with:
           path: ~/.local
           key: poetry-1.5.1-0
@@ -29,7 +29,7 @@ jobs:
       
       - name: cache deps
         id: cache-deps
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: .venv
           key: pydeps-${{ hashFiles('**/poetry.lock') }}
