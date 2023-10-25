@@ -39,4 +39,5 @@ jobs:
       
       - run: poetry install --no-interaction
 
+      - run: poetry run py /misc/src/dummy_gen.py
       - run: poetry run pytest
