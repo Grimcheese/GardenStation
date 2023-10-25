@@ -39,5 +39,5 @@ jobs:
       
       - run: poetry install --no-interaction
 
-      - run: poetry run python3 /misc/src/dummy_gen.py
+      - run: poetry run python3 /home/runner/work/GardenStation/GardenStation/misc/src/dummy_gen.py
       - run: poetry run pytest
