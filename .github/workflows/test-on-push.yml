@@ -1,0 +1,42 @@
+# Taken from https://jacobian.org/til/github-actions-poetry/
+
+on:
+  push:
+    branches: [5-build-tools]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+      
+      - name: cache poetry install
+        uses: action/cache@v4
+        with:
+          path: ~/.local
+          key: poetry-1.5.1-0
+      
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.5.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      
+      - name: cache deps
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: pydeps-${{ hashFiles('**/poetry.lock') }}
+      
+      - run: poetry install --no-interaction --no-root
+        if: steps:cache-deps.outputs.cache-hit != 'true'
+      
+      - run: poetry install --no-interaction
+
+      - run: poetry run pytest
