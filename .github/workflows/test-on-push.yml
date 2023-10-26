@@ -1,14 +1,14 @@
 # Taken from https://jacobian.org/til/github-actions-poetry/
 
-name: test-on-push
+name: Run pytest
 
 on:
   push:
-    branches: [5-build-tools]
+    branches: [main]
   pull_request:
 
 jobs:
-  test:
+  pull-request-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
