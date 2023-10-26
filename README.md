@@ -16,7 +16,12 @@ There should also be a live feed of the garden from the front.
 
 Initially the web page should only be accessible to local traffic so the data can be accessed from home or devices connected via VPN. 
 
-This document is intended to give you instructions on what you need to get this project running. For a more in depth look at the purpose, design, functionality and future improvements the wiki contains further information. 
+This document is intended to give you instructions on what you need to get this project running. For a more in depth look at the purpose, design, functionality and future improvements the wiki contains further information and can be found [here](https://github.com/Grimcheese/GardenStation/wiki).
+
+# Contributing
+This project has many separate components and features that are all integrated to create a complete system. The project makes use of the various project management and automation features provided by Github to try and follow current CI/CD best practices. 
+
+For an in depth explanation of the workflow for this project and how to make contributions see the wiki: [Contributions](https://github.com/Grimcheese/GardenStation/wiki/Contributiions)
 
 # Functionality
 
