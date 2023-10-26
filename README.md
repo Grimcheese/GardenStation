@@ -21,7 +21,7 @@ This document is intended to give you instructions on what you need to get this 
 # Contributing
 This project has many separate components and features that are all integrated to create a complete system. The project makes use of the various project management and automation features provided by Github to try and follow current CI/CD best practices. 
 
-For an in depth explanation of the workflow for this project and how to make contributions see the wiki: [Contributions](https://github.com/Grimcheese/GardenStation/wiki/Contributiions)
+For an in depth explanation of the workflow for this project and how to make contributions see the wiki: [Contributing](https://github.com/Grimcheese/GardenStation/wiki/Contributing)
 
 # Functionality
 
