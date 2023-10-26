@@ -1,5 +1,7 @@
 # Taken from https://jacobian.org/til/github-actions-poetry/
 
+name: test-on-push
+
 on:
   push:
     branches: [5-build-tools]
@@ -42,4 +44,4 @@ jobs:
       - run: poetry run python3 /home/runner/work/GardenStation/GardenStation/misc/src/dummy_gen.py
       - run: poetry run pytest
 
-      # Change
+
