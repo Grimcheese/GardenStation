@@ -161,6 +161,8 @@ class TestDatabase():
             records.extend(device_records)
             
         assert len(records) == 1
+        
+        assert False == True
 
 
 

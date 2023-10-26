@@ -1,6 +1,8 @@
 # DISCLAIMER: WORK IN PROGRESS
 This project and this document are a work in progress and is being created to be used as a learning experience for creating software and computer systems for solving real world problems. 
 
+[![.github/workflows/test-on-push.yml](https://github.com/Grimcheese/GardenStation/actions/workflows/test-on-push.yml/badge.svg)](https://github.com/Grimcheese/GardenStation/actions/workflows/test-on-push.yml)
+
 # Garden Station Project
 Garden station is a web application that tracks data from my garden and displays it on a web page. It is designed using the LAMP stack framework.
 
