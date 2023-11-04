@@ -4,3 +4,4 @@
 ## [Hardware](Hardware)
 ## [Security](Security)
 ## [Database](Database)
+## [Contributing](Contributing)
