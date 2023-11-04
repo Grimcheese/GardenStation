@@ -15,6 +15,12 @@ GardenStation has a lot of separate components that need to be worked on and com
 - [ ] Live camera feed display
 - [ ] Public web site
 
+Work on this project will also include implementing CI/CD practices, tools and workflows to try and gain experience working on a project using industry best practices. 
+- Running a Jenkins server
+- Utilising issues, branches, wiki documentation
+- Making use of Github Actions for automation
+- Ensuring all code is thoroughly tested
+
 
 # Changelog
 
