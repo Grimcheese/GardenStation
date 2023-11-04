@@ -3,7 +3,7 @@ This project is my own personal project and I don't expect any outside contribut
 
 
 # Project Workflow
-Any new work or fix should begin with an issue. Whenever a bug becomes apparent or there is a new feature idea to implement an issue must be created to describe the fix/feature, what the goal is, and how it should be implemented. The issue can then have a history for any discussion or updates related to it. From an issue, I can assign myself to work on it and then begin work on a new branch with the issue number and name (e.g. The branch name for Example Issue #1 would be 1-example-issue).
+Any new work or fix should begin with an issue created on the github repo's page. Whenever a bug becomes apparent or there is a new feature idea to implement an issue must be created to describe the fix/feature, what the goal is, and how it should be implemented. The issue can then have a history for any discussion or updates related to it. From an issue, I can assign myself to work on it and then begin work on a new branch with the issue number and name (e.g. The branch name for Example Issue #1 would be 1-example-issue).
 
 The main branch is protected and cannot be pushed to directly, new changes must be submitted via pull requests. 
 
