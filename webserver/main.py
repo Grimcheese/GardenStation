@@ -19,9 +19,8 @@ def weather_page():
 
 @app.route('/soil/')
 def soil_page():
+    # Generate default data graphs
     return render_template('soil.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-    """"""
