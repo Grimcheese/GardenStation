@@ -25,11 +25,21 @@ def get_line_graph_JSON(data, xVal, yVal):
 
 def generate_all_default_graphs(db):
     # Get all device ids stored in database
-
+    ids = db.get_all_ids()
+    
     # For each unique id get the complete dataset
+    ds = {}
+    for id in ids:
+        ds[id] = db.get_all_moisture_from_device(id)
 
     # return dict of each graph in JSON encoded format
-    pass
+    dsJSON = {}
+    for id in ds.keys():
+        data = ds[id]
+        
+        dsJSON[id] = get_line_graph_JSON(data, "timestamp", "moisture")
+    
+    return dsJSON
 
 def generate_moisture_graph(data):
     print("Data retrieved:")

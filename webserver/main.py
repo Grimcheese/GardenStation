@@ -10,6 +10,9 @@ from pathlib import Path
 
 app = Flask(__name__)
 
+db_path = Path(__file__).parents[1].joinpath("db", "test_database.db")
+db = Database(False, db_path)
+
 @app.route('/')
 def root_redirect():
     return redirect('/home/')
@@ -28,16 +31,14 @@ def weather_page():
 @app.route('/soil/')
 def soil_page():
     # Generate default data graphs for each device with recorded data
-
+    graphJSON = graphs.generate_all_default_graphs(db)
+    print(graphJSON)
     
-    return render_template('soil.html')
+    return render_template('soil.html', graphJSON=graphJSON)
 
 
 @app.route('/graph')
 def graph_page():
-    db_path = Path(__file__).parents[1].joinpath("db", "test_database.db")
-
-    db = Database(False, db_path)
 
     # Just get some data from the database - implement options later
     dataset = db.get_all_moisture_from_device(0)
