@@ -6,6 +6,7 @@ from pathlib import Path
 from ..webserver import init_db
 
 import plotly.graph_objects as go
+import plotly.express as px
 
 def get_default_data(db, device, start, end):
     data = db.get_moisture_from_device_range(device, start, end)
@@ -21,7 +22,8 @@ def generate_moisture_graph(data):
 
     for t in extractedData:
         print(t)
-    fig = go.Figure([go.Bar(x=extractedData[1], y=extractedData[0])])
+
+    fig = px.line(data, x="timestamp", y="moisture")
     fig.show()
 
 if __name__ == '__main__':
@@ -32,4 +34,7 @@ if __name__ == '__main__':
     #db = Database(db_path)
 
     data = db.get_all_moisture_from_device(0)
+    generate_moisture_graph(data)
+
+    data = db.get_all_moisture_from_device(1)
     generate_moisture_graph(data)
