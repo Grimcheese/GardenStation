@@ -5,6 +5,9 @@ from pathlib import Path
 
 from ..webserver import init_db
 
+import pandas as pd
+import json
+import plotly
 import plotly.graph_objects as go
 import plotly.express as px
 
@@ -12,6 +15,13 @@ def get_default_data(db, device, start, end):
     data = db.get_moisture_from_device_range(device, start, end)
 
     return data
+
+def get_line_graph_JSON(data, xVal, yVal):
+    fig = px.line(data, x=xVal, y=yVal)
+    
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
+
 
 def generate_moisture_graph(data):
     print("Data retrieved:")
