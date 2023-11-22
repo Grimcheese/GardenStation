@@ -23,6 +23,14 @@ def get_line_graph_JSON(data, xVal, yVal):
     return graphJSON
 
 
+def generate_all_default_graphs(db):
+    # Get all device ids stored in database
+
+    # For each unique id get the complete dataset
+
+    # return dict of each graph in JSON encoded format
+    pass
+
 def generate_moisture_graph(data):
     print("Data retrieved:")
     for element in data:

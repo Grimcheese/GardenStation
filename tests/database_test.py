@@ -167,3 +167,29 @@ class TestDatabase():
         assert len(records) == 1
 
 
+    def test_get_all_ids(self, setup_dummy_database, get_test_data):
+        print("Getting all device id values...")
+        
+        database = setup_dummy_database
+
+        ids = database.get_all_ids()
+
+        for element in ids:
+            print(element)
+
+        # Assert that the returned id values is the same set as in the test data file
+        ids_from_file = []
+        for i in get_test_data:
+            line = i.strip().split(",")
+            if line[3] not in ids_from_file:
+                ids_from_file.append(line[3])
+        
+        ids_from_file = [int(num) for num in ids_from_file]
+        ids_from_file.sort()
+
+        print(f"Device ids from the data: {ids_from_file}")
+        print(f"Device ids from the database: {ids}")
+
+        assert set(ids_from_file).intersection(ids)
+              
+        

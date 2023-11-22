@@ -27,7 +27,8 @@ def weather_page():
 
 @app.route('/soil/')
 def soil_page():
-    # Generate default data graphs
+    # Generate default data graphs for each device with recorded data
+
     
     return render_template('soil.html')
 

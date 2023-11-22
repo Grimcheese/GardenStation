@@ -159,8 +159,8 @@ class Database:
         connection = self._open_row_connection()
         cursor = connection.cursor()
 
-        query = f"SELECT * FROM moisture_readings WHERE device_id IS (?) \
-        AND timestamp >= (?) AND timestamp <= (?)"
+        query = "SELECT * FROM moisture_readings WHERE device_id IS (?) \
+        AND timestamp >= (?) AND timestamp <= (?);"
         
         cursor.execute(query, (device, start, end))
 
@@ -169,3 +169,20 @@ class Database:
         
         return results
 
+
+    def get_all_ids(self):
+        """Get a sorted list of all device id values present in the database."""
+
+        connection = self._open_row_connection()
+        cursor = connection.cursor()
+
+        query = "SELECT DISTINCT device_id FROM moisture_readings;"
+        cursor.execute(query)
+
+        raw_results = [dict(row) for row in cursor.fetchall()]
+        connection.close()
+
+        results = [row['device_id'] for row in raw_results]
+
+        results.sort()
+        return results
