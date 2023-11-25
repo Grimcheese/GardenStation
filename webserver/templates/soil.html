@@ -7,7 +7,7 @@
 
     {% for key, value in graphJSON.items() %}
         <h1>Moisture monitor {{key}}</h1>  
-        <div id="chart{{key}}" class="chart{key}"></div>
+        <div id="chart{{key}}" class="chart{key} charts"></div>
         
         <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
         <script type='text/javascript'>
