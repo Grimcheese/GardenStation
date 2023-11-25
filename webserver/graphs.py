@@ -25,6 +25,9 @@ def get_line_graph_JSON(data, xVal, yVal):
     
     fig = px.line(data, x=xVal, y=yVal)
     
+    fig.update_xaxes(title_text="Time/Date")
+    fig.update_yaxes(title_text="Moisture Level")
+    
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
 
