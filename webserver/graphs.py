@@ -31,6 +31,19 @@ def create_line_graph_JSON(data, xVal, yVal):
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
 
+def create_graphs(db, graph_identity):
+    """"""
+    
+    # Get all unique values of a column
+    loaded_identifiers = db.get_unique_column_vals(graph_identity)
+
+    # For each identifier get all records and create JSON graph
+    JSONgraphs = {}
+    for id in loaded_identifiers:
+        data = db.get_all_moisture_from_column_id(graph_identity, id)
+        JSONgraphs[id] = create_line_graph_JSON(data, "timestamp", "moisture")
+
+    return JSONgraphs
 
 def get_all_default_device_graphs(db):
     """Get the default JSON representation of the graphs for each device in the database.
@@ -44,19 +57,21 @@ def get_all_default_device_graphs(db):
     # Get all device ids stored in database
     ids = db.get_all_ids()
     
-    # For each unique id get the complete dataset
-    ds = {}
+    # For each unique id get the complete dataset and create JSON graph
+    JSONgraphs = {}
     for id in ids:
-        ds[id] = db.get_all_moisture_from_device(id)
-
-    # return dict of each graph in JSON encoded format
-    dsJSON = {}
-    for id in ds.keys():
-        data = ds[id]
-        
-        dsJSON[id] = create_line_graph_JSON(data, "timestamp", "moisture")
+        device_data = db.get_all_moisture_from_device(id)
+        JSONgraphs[id] = create_line_graph_JSON(data, "timestamp", "moisture")
     
-    return dsJSON
+    return JSONgraphs
+
+
+def get_all_default_location_graphs(db):
+    """Get the default graphs for each location in JSON format"""
+
+    locations = db.get_all_locations()
+
+    JSONgraphs = {}
 
 
 

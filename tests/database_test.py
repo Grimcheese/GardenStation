@@ -203,5 +203,31 @@ class TestDatabase():
             line = line.strip().split(",")
             if line[2] not in locations_from_file:
                 locations_from_file.append(line[2])
+
+        locations_from_file.sort()
         
-        print(locations)
+        print(f"Locations from the data: {locations_from_file}")
+        print(f"Locations from the database: {locations}")
+
+        assert set(locations_from_file).intersection(locations)
+
+
+    def test_get_unique_column_vals(self, setup_dummy_database, get_test_data):
+        print("Getting values based on seleted column...")
+
+        print("\tChecking locations...")
+        db = setup_dummy_database
+        locations = db.get_unique_column_vals("location")
+
+        locations_from_file = []
+        for line in get_test_data:
+            line = line.strip().split(",")
+            if line[2] not in locations_from_file:
+                locations_from_file.append(line[2])
+
+        locations_from_file.sort()
+        
+        print(f"Locations from the data: {locations_from_file}")
+        print(f"Locations from the database: {locations}")
+
+        assert set(locations_from_file).intersection(locations)
