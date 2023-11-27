@@ -12,7 +12,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 
-def get_line_graph_JSON(data, xVal, yVal):
+def create_line_graph_JSON(data, xVal, yVal):
     """Get the JSON representation of a plotly line graph.
     
     Args:
@@ -32,8 +32,8 @@ def get_line_graph_JSON(data, xVal, yVal):
     return graphJSON
 
 
-def generate_all_default_graphs(db):
-    """Using the database referenced with db - generate default graphs for website.
+def get_all_default_device_graphs(db):
+    """Get the default JSON representation of the graphs for each device in the database.
     
     Args:
         db: Database object that contains soil moisture data to be displayed.
@@ -54,9 +54,11 @@ def generate_all_default_graphs(db):
     for id in ds.keys():
         data = ds[id]
         
-        dsJSON[id] = get_line_graph_JSON(data, "timestamp", "moisture")
+        dsJSON[id] = create_line_graph_JSON(data, "timestamp", "moisture")
     
     return dsJSON
+
+
 
 
 def generate_moisture_graph(data):

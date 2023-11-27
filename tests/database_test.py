@@ -192,4 +192,16 @@ class TestDatabase():
 
         assert set(ids_from_file).intersection(ids)
               
+    def test_get_all_locations(self, setup_dummy_database, get_test_data):
+        print("Getting all locations...")
         
+        db = setup_dummy_database
+        locations = db.get_all_locations()
+        
+        locations_from_file = []
+        for line in get_test_data:
+            line = line.strip().split(",")
+            if line[2] not in locations_from_file:
+                locations_from_file.append(line[2])
+        
+        print(locations)
