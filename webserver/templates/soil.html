@@ -6,7 +6,7 @@
     <p>This page contains graphs displaying the latest data recorded from the soil moisture sensors.</p>
 
     {% for key, value in graphJSON.items() %}
-        <h1>Moisture monitor {{key}}</h1>  
+        <h1>{{key}} monitor</h1>  
         <div id="chart{{key}}" class="chart{key} charts"></div>
         
         <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
