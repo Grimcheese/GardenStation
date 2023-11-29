@@ -3,9 +3,17 @@
 {% block title %} Soil Page {% endblock %}
 
 {%block content %} 
-    <p>This page will contain graphs displaying the latest 
-        data recorded from the soil moisture sensors.
-    </p>
-    <h2>Soil moisture results graph:</h2>
-    <h2></h2>
+    <p>This page contains graphs displaying the latest data recorded from the soil moisture sensors.</p>
+
+    {% for key, value in graphJSON.items() %}
+        <h1>{{key}} monitor</h1>  
+        <div id="chart{{key}}" class="chart{key} charts"></div>
+        
+        <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+        <script type='text/javascript'>
+            var graphs = {{value | safe}};
+            Plotly.plot('chart{{key}}', graphs, {});
+        </script>
+    {% endfor %}
+
 {%endblock %}

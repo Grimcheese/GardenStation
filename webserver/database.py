@@ -85,7 +85,7 @@ class Database:
         for key in column_values.keys():
             values.append("?")
         
-        query = f"INSERT INTO {table} ({', '.join(column_values.keys())}) VALUES ({', '.join(values)})"
+        query = f"INSERT INTO {table} ({', '.join(column_values.keys())}) VALUES ({', '.join(values)});"
         data = tuple(column_values.values())
 
         cursor.execute(query, data)
@@ -118,32 +118,27 @@ class Database:
         cursor = connection.cursor()
         
         query = "SELECT * FROM moisture_readings WHERE device_id = (?) \
-            AND timestamp = (?)"
+            AND timestamp = (?);"
         cursor.execute(query, (device_id, timestamp))
         results = [dict(row) for row in cursor.fetchall()]
         connection.close()
         
         return results
-
-
-    def get_all_moisture_from_device(self, device_id):
-        """Retrieve all moisture records from the specified database.
         
-        Args:
-            device_id: The ID number of the device which records are to be
-                retrieved.
-        """
-        
+
+    def get_all_moisture_from_column_id(self, column_name, column_id):
+
         connection = self._open_row_connection()
         cursor = connection.cursor()
 
-        cursor.execute(f"SELECT * FROM moisture_readings WHERE device_id = (?)", (device_id,))
-        
-        # Convert rows to dictionary key:value pairs
+        query = f"SELECT * FROM moisture_readings WHERE {column_name} = (?);"
+        cursor.execute(query, (column_id,))
+
         results = [dict(row) for row in cursor.fetchall()]
         connection.close()
 
         return results
+
 
     def get_moisture_from_device_range(self, device, start, end):
         """Get all moisture readings from a device within a datetime range.
@@ -159,8 +154,8 @@ class Database:
         connection = self._open_row_connection()
         cursor = connection.cursor()
 
-        query = f"SELECT * FROM moisture_readings WHERE device_id IS (?) \
-        AND timestamp >= (?) AND timestamp <= (?)"
+        query = "SELECT * FROM moisture_readings WHERE device_id IS (?) \
+        AND timestamp >= (?) AND timestamp <= (?);"
         
         cursor.execute(query, (device, start, end))
 
@@ -169,3 +164,26 @@ class Database:
         
         return results
 
+    
+    def get_unique_column_vals(self, column_name):
+        """Get a sorted list of all unique values for a columm."""
+
+        # Valid list of values for column_name
+        valid_names = ["device_id", "location"]
+
+        if column_name not in valid_names:
+            raise ValueError
+
+        connection = self._open_row_connection()
+        cursor = connection.cursor()
+
+        query = f"SELECT DISTINCT {column_name} FROM moisture_readings;"
+        cursor.execute(query)
+
+        raw_results = [dict(row) for row in cursor.fetchall()]
+        connection.close()
+
+        results = [row[f'{column_name}'] for row in raw_results]
+        results.sort()
+
+        return results

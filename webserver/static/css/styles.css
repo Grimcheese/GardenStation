@@ -20,6 +20,11 @@ h1.centre {
     width: 50%;
 }
 
+div.charts {
+    margin: auto;
+    width: 90%;
+}
+
 /* Main page content style */
 
 .content {
