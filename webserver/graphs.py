@@ -11,6 +11,23 @@ import plotly
 import plotly.graph_objects as go
 import plotly.express as px
 
+def create_line_graph(data, xVal, yVal):
+    """Create a plotly line graph from a dataset.
+    
+    Args:
+        xVal: The dictionary key used to access the data on the x-axis.
+        yVal: The dictionary key used to access the data on the y-axis
+    
+    Returns: A plotly graph.
+    """
+
+    fig = px.line(data, x=xVal, y=yVal)
+    
+    fig.update_xaxes(title_text="Time/Date")
+    fig.update_yaxes(title_text="Moisture Level")
+
+    return fig
+
 
 def create_line_graph_JSON(data, xVal, yVal):
     """Get the JSON representation of a plotly line graph.
@@ -23,16 +40,24 @@ def create_line_graph_JSON(data, xVal, yVal):
     Return: A plotly graph encoded as a JSON object.
     """
     
-    fig = px.line(data, x=xVal, y=yVal)
+    line_graph = create_line_graph(data, xVal, yVal)
     
-    fig.update_xaxes(title_text="Time/Date")
-    fig.update_yaxes(title_text="Moisture Level")
-    
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    graphJSON = json.dumps(line_graph, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
 
+
 def create_graphs(db, graph_identity):
-    """"""
+    """Create a series of graphs for use in default /soil page.
+    
+    Args:
+        graph_identity: Name of the table column in the database to select
+            and sort tables by. E.g: graph_identity of device_id creates a 
+            new graph for each device_id found in the moisture_reading 
+            database.
+    
+    Returns: A dictionary of plotly graphs encoded in JSON format. The graphs
+        are each mapped to an identifier linked to the data used for the graph.
+    """
     
     # Get all unique values of a column
     loaded_identifiers = db.get_unique_column_vals(graph_identity)
@@ -44,36 +69,6 @@ def create_graphs(db, graph_identity):
         JSONgraphs[id] = create_line_graph_JSON(data, "timestamp", "moisture")
 
     return JSONgraphs
-
-def get_all_default_device_graphs(db):
-    """Get the default JSON representation of the graphs for each device in the database.
-    
-    Args:
-        db: Database object that contains soil moisture data to be displayed.
-        
-    Return: Dictionary of plotly graphs encoded into JSON objects. The key value
-        is the device_id for the device the data has been recorded from.
-    """
-    # Get all device ids stored in database
-    ids = db.get_all_ids()
-    
-    # For each unique id get the complete dataset and create JSON graph
-    JSONgraphs = {}
-    for id in ids:
-        device_data = db.get_all_moisture_from_device(id)
-        JSONgraphs[id] = create_line_graph_JSON(data, "timestamp", "moisture")
-    
-    return JSONgraphs
-
-
-def get_all_default_location_graphs(db):
-    """Get the default graphs for each location in JSON format"""
-
-    locations = db.get_all_locations()
-
-    JSONgraphs = {}
-
-
 
 
 def generate_moisture_graph(data):
