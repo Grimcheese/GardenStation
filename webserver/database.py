@@ -124,40 +124,6 @@ class Database:
         connection.close()
         
         return results
-
-
-    def get_all_moisture_from_device(self, device_id):
-        """Retrieve all moisture records from the specified device.
-        
-        Args:
-            device_id: The ID number of the device which records are to be
-                retrieved.
-        """
-        
-        connection = self._open_row_connection()
-        cursor = connection.cursor()
-
-        cursor.execute(f"SELECT * FROM moisture_readings WHERE device_id = (?);", (device_id,))
-        
-        # Convert rows to dictionary key:value pairs
-        results = [dict(row) for row in cursor.fetchall()]
-        connection.close()
-
-        return results
-    
-    
-    def get_all_moisture_from_location(self, location):
-        """Retrieve all moisture records from the specified location."""
-
-        connection = self._open_row_connection()
-        cursor = connection.cursor()
-        
-        cursor.execute("SELECT * FROM moisture_readings WHERE location = (?);", (location,))
-        
-        results = [dict(row) for row in cursor.fetchall()]
-        connection.close()
-        
-        return results
         
 
     def get_all_moisture_from_column_id(self, column_name, column_id):
@@ -198,41 +164,6 @@ class Database:
         
         return results
 
-
-    def get_all_ids(self):
-        """Get a sorted list of all device_id values present in the moisture_reading table"""
-
-        connection = self._open_row_connection()
-        cursor = connection.cursor()
-
-        query = "SELECT DISTINCT device_id FROM moisture_readings;"
-        cursor.execute(query)
-
-        raw_results = [dict(row) for row in cursor.fetchall()]
-        connection.close()
-
-        results = [row['device_id'] for row in raw_results]
-
-        results.sort()
-        return results
-
-
-    def get_all_locations(self):
-        """Get a sorted list of all locations present in the moisture_reading table"""
-        
-        connection = self._open_row_connection()
-        cursor = connection.cursor()
-        
-        query = "SELECT DISTINCT location FROM moisture_readings;"
-        cursor.execute(query)
-        
-        raw_results = [dict(row) for row in cursor.fetchall()] 
-        connection.close()
-        
-        results = [row['location'] for row in raw_results]
-        
-        results.sort()
-        return results
     
     def get_unique_column_vals(self, column_name):
         """Get a sorted list of all unique values for a columm."""

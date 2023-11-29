@@ -86,34 +86,6 @@ class TestDatabase():
             assert check_record[0]['location'] == location
             assert f"{check_record[0]['device_id']}" == device_id
 
-
-    def test_moisture_insert(self, get_test_data, setup_empty_database):
-        pass
-
-
-    def test_retrieve_all_records(self, test_moisture_data, setup_dummy_database, get_test_data):
-        print("\nCheck retrieval of all records from specified device...\n")
-        
-        database = setup_dummy_database
-        """
-        # Get each line from the test data file
-        with open(test_moisture_data, 'r') as f:
-            for line in f.readlines():
-                if line.strip().split(',')[3] == '0':
-                    lines.append(line)
-           """ 
-        lines = get_test_data
-        
-        # Compare number of records in data file to records retrieved from db for each device
-        for device_id in range(0, 4):
-            device_lines = []
-            for line in lines:
-                if line.strip().split(',')[3] == f'{device_id}':
-                    device_lines.append(line)
-            
-            records = database.get_all_moisture_from_device(device_id)
-            assert len(device_lines) == len(records)
-
     
     def test_retrieve_date_range(self, setup_dummy_database, num_of_devices, get_test_data):
         print("\nCheck retrieval based on date range...")
@@ -167,17 +139,18 @@ class TestDatabase():
         assert len(records) == 1
 
 
-    def test_get_all_ids(self, setup_dummy_database, get_test_data):
+    def test_get_unique_column_vals(self, setup_dummy_database, get_test_data):
+        
+        # Test getting all devices
         print("Getting all device id values...")
         
         database = setup_dummy_database
 
-        ids = database.get_all_ids()
+        ids = database.get_unique_column_vals("device_id")
 
         for element in ids:
             print(element)
 
-        # Assert that the returned id values is the same set as in the test data file
         ids_from_file = []
         for i in get_test_data:
             line = i.strip().split(",")
@@ -191,28 +164,8 @@ class TestDatabase():
         print(f"Device ids from the database: {ids}")
 
         assert set(ids_from_file).intersection(ids)
-              
-    def test_get_all_locations(self, setup_dummy_database, get_test_data):
-        print("Getting all locations...")
-        
-        db = setup_dummy_database
-        locations = db.get_all_locations()
-        
-        locations_from_file = []
-        for line in get_test_data:
-            line = line.strip().split(",")
-            if line[2] not in locations_from_file:
-                locations_from_file.append(line[2])
 
-        locations_from_file.sort()
-        
-        print(f"Locations from the data: {locations_from_file}")
-        print(f"Locations from the database: {locations}")
-
-        assert set(locations_from_file).intersection(locations)
-
-
-    def test_get_unique_column_vals(self, setup_dummy_database, get_test_data):
+        # Test getting all locations
         print("Getting values based on seleted column...")
 
         print("\tChecking locations...")
