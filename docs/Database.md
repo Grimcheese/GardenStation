@@ -1,6 +1,10 @@
 # Database
 This project uses SQLite as the DBMS and in python can be accessed using the sqlite3 module.
 
+# Database Design
+
+![Basic Database Schema](../resources/soil_moisture_db.svg)
+
 # API
 The API allows for inserting new records into the database and retrieving that data. Currently the API only supports retrieving data from the moisture_readings table. 
 
