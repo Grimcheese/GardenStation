@@ -12,6 +12,8 @@ Pull requests trigger a Github workflow to run pytest on the merged code to ensu
 ## Versions
 GardenStation follows the Semantic Versioning format of X.X.X (Major.Minor.Patch). Due to the sporadic nature of development on this project version numbers are not tied to any interval of time, instead they are only related to new changes and their perceived scale of change (Represent a new release, minor change within a release, or a new change to the code base). Where each update to main from a pull request can represent an increment to the patch portion of the version number. 
 
+Changes to the documentation or wiki are not considered in the version numbering.
+
 ALL pre 1.0.0 versions are considered as 'in-development'.
 
 # Misc
