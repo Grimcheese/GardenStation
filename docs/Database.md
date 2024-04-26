@@ -18,7 +18,7 @@ There are two entities with a single relationship that can be described as "Devi
 
 ### Mapping ERD
 
-As this is a 1:1 relationship it could be merged into a single relation however I decided to create an extra relation as it provides flexibility if the database needs to be modified in the future.
+Due to the M:N relationship a new relation reading_taken is created along with relations for the device and location entities.
 
 The schema describing the database illustrated here:
 
