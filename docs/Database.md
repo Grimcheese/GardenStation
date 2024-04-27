@@ -14,14 +14,18 @@ This project uses SQLite as the DBMS and in python can be accessed using the sql
 ### Entity Relationship Diagram 
 
 There are two entities with a single relationship that can be described as "Device takes a reading at a location" and is illustrated in this diagram: 
-![Database ERD](../resources/soil_moisture_erd.svg)
 
-### Mapping ERD
+![Database ERD - deprecated]()
 
-Due to the M:N relationship a new relation reading_taken is created along with relations for the device and location entities.
+### Database Schema
 
-The schema describing the database illustrated here:
+The entities are represented in the schema as expected by the ERD, the only major addition is the device_locations relation.
 
+To represent the relationship between devices and locations (devices being placed at a specific location for a duration of time) a new relation 'device_locations' has been created. This table can be used to set the location field in each reading taken by checking the current location of the device that has sent the reading. **Accuracy depends on this table being updated whenever a device is moved.** 
+
+The entity relationship diagram has been mapped to a schema as follows:
+
+![Database Schema](../resources/soil_moisture_db_schema.svg)
 
 
 # API
