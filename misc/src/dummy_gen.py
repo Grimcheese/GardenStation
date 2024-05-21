@@ -27,7 +27,7 @@ from pathlib import Path
 
 import random
 
-def next_datetime(dt_obj, h, m=0, s=0):
+def next_datetime(dt_obj, d=0, h=0, m=0, s=0):
     """Create a new datetime object with specified time added to it.
     
     Args:
@@ -44,7 +44,7 @@ def next_datetime(dt_obj, h, m=0, s=0):
 
     return new_datetime
 
-
+@DeprecationWarning
 def soil_data_point(prev_data, id, location, mode='random'):
     """Take a previous soil data point and generate the next one.
     
@@ -95,6 +95,8 @@ def create_path(fname, directory, root_dir=Path(__file__).parent):
 
     return Path.joinpath(new_dir_path, fname)
 
+
+@DeprecationWarning
 def generate_moisture_data(num, fname):
     """Generate a set of moisture data and save to disk.
     
@@ -124,6 +126,8 @@ def generate_moisture_data(num, fname):
             
             written_data_point = new_data_point
 
+
+@DeprecationWarning
 def generate_weather_data(num, fname):
     """Generate a set of weather data and save to disk.
     
@@ -147,6 +151,60 @@ def generate_weather_data(num, fname):
 
             prev_date = test_date
 
+
+def create_devices(num):
+    """Create devices to be stored in db.
+    
+    Devices will just be created with default values for software
+    version and microprocessor. 
+
+    Args:
+        num: Number of devices to create.
+        
+    """
+
+    default_version = '0.1'
+    default_microprocessor = 'Arduino Uno'
+
+    devices = []
+    for i in range(num):
+        current_device = [i, default_version, default_microprocessor]
+        devices.append(current_device)
+
+    return devices
+
+
+def create_locations(num):
+    """ Create locations to be stored in db.
+    
+    Args:
+        num: Number of locations to create.
+    """
+    # top left -3.446694622420489, 82.5136624361147
+    # bottom left -8.228272639512625, 80.00517852398696
+    # top right -1.619456846560301, 95.31738240426665
+    # bottom right -17.14066880626033, 98.40072721292364
+    
+    latitude_max = -3.446694622420489
+    latitude_min = -17.14066880626033
+
+    longitude_max = 80.00517852398696
+    longitude_min = 98.40072721292364
+
+    default_address = '400 Road Street Ave, Place'
+    
+    
+    locations = []
+    for i in range(num):
+        lat = random.randrange(latitude_max, latitude_min)
+        long = random.randrange(longitude_max, longitude_min)
+
+        current_location = [i, lat, long, default_address]
+        locations.append(current_location)
+
+    return locations
+
+
 def create_csv(fname, fields, data):
     """Create a csv file with field and data values.
     
@@ -162,6 +220,89 @@ def create_csv(fname, fields, data):
     with open(abs_fpath, 'x') as f:
         f.write(fields)
         f.writelines(data) # NOTE may need to add new line separators
+
+
+def create_device_locations(devices, locations):
+    """Create device_locations data for db.
+    
+    Each device must be placed in at least one place. If there are 
+    unused locations create a new record at a random time interval
+    and update the previous device_locations entry for that device.
+    
+    Args:
+        devices: Devices that have been generated for use in db.
+        locations: Locations that have been generated for use in db.
+    """
+
+    start_date = datetime(2024,1,1,6)
+
+    device_locations = []
+
+    # Assign all devices an initial location
+    loc_index = 0
+    for dev in devices:
+        current_dev_loc = [dev[0], locations[loc_index][0], start_date]
+        device_locations.append(current_dev_loc)
+        
+        loc_index += 1
+
+    # place device in a new location after a random amount of time
+    device_move_index = 0
+    while loc_index < len(locations):
+        
+        move_date = None # May need to catch exception if move_date assignment fails
+
+        # Find and update initial device_location record
+        f_index = -1
+        for i in range(len(device_locations)):
+            if device_locations[i][0] == device_move_index and len(device_locations) == 3:
+                f_index = i
+                
+                days_to_move = random.randint(7,40)
+                move_date = next_datetime(device_locations[i][2], days_to_move)
+                
+                device_locations[i] = [device_move_index, locations[loc_index], device_locations[i][2], move_date]
+
+        # Create new device_locations record
+        device_locations.append(device_move_index, locations[loc_index][0], move_date)
+
+        # Update index values assume that a device is moved on each loop
+        if device_move_index == len(devices):
+            device_move_index = 0
+        else:
+            device_move_index += 1
+
+        loc_index += 1
+
+    return device_locations
+
+
+def create_samples(num, devices, start_time):
+    """Generate a series of data points for each device.
+    
+    Args:
+        num: The number of samples to create per device.
+        devices: The devices to be used for the reading.
+        start_time: The datetime for the start of the data set.
+    
+    """
+
+    samples = []
+
+    for device in devices:
+        current_time = start_time
+        for i in range(num):
+            # generate reading value (random)
+            num = random.randrange(0, 1000)
+            ran_float = num / 1000
+            
+            # calculate datetime
+            current_time = next_datetime(current_time, 0, 1)
+
+            samples.append(len(samples), current_time, ran_float, device[0])
+
+    return samples
+            
 
 
 def generate_soil_reading_table_data(device_num, location_num, sample_num, fname):
@@ -195,8 +336,8 @@ def generate_soil_reading_table_data(device_num, location_num, sample_num, fname
 
 def main():
     generate_soil_reading_table_data(100, "soil_test.txt")
-    generate_moisture_data(100, "test_moisture.txt")
-    generate_weather_data(100, "test_weather.txt")
+    #generate_moisture_data(100, "test_moisture.txt")
+    #generate_weather_data(100, "test_weather.txt")
 
 if __name__ == "__main__":
     main()

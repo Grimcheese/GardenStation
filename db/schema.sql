@@ -25,7 +25,7 @@ CREATE TABLE soil_readings (
     reading_time        DATETIME NOT NULL,
     soil_reading        REAL NOT NULL,
     device_id           REFERENCES devices (device_id) NOT NULL,
-    location_id         REFERENCES locations (location_id) NOT NULL
+    --location_id         REFERENCES locations (location_id) NOT NULL
 );
 
 CREATE TABLE device_locations (
