@@ -191,13 +191,13 @@ def create_locations(num):
     longitude_max = 80.00517852398696
     longitude_min = 98.40072721292364
 
-    default_address = '400 Road Street Ave, Place'
+    default_address = "400 Road Street Ave, Place"
     
     
     locations = []
     for i in range(num):
-        lat = random.randrange(latitude_max, latitude_min)
-        long = random.randrange(longitude_max, longitude_min)
+        lat = random.uniform(latitude_max, latitude_min)
+        long = random.uniform(longitude_max, longitude_min)
 
         current_location = [i, lat, long, default_address]
         locations.append(current_location)
@@ -211,15 +211,29 @@ def create_csv(fname, fields, data):
     Args:
         fname: The file name to use for csv file.
         fields: The field names for data on subsequent lines.
-        data: List of all data to write to file.
+        data: List of all data to write to file. Stored as a 2D list
+            data[record][data_element]
         
     """
 
     abs_fpath = create_path(fname, 'data')
 
-    with open(abs_fpath, 'x') as f:
-        f.write(fields)
-        f.writelines(data) # NOTE may need to add new line separators
+    with open(abs_fpath, 'w') as f:
+        f.write(f"{fields}\n")
+
+        # Generate string to write to file
+        data_strings = []
+        for record in data:
+            record_string = []
+            for field in record:
+                record_string.append(str(field))
+
+            str_join = ','.join(record_string)
+            print(str_join)
+            data_strings.append(f"{str_join}\n")
+        
+        
+        f.writelines(data_strings) # NOTE may need to add new line separators
 
 
 def create_device_locations(devices, locations):
@@ -264,7 +278,7 @@ def create_device_locations(devices, locations):
                 device_locations[i] = [device_move_index, locations[loc_index], device_locations[i][2], move_date]
 
         # Create new device_locations record
-        device_locations.append(device_move_index, locations[loc_index][0], move_date)
+        device_locations.append([device_move_index, locations[loc_index][0], move_date])
 
         # Update index values assume that a device is moved on each loop
         if device_move_index == len(devices):
@@ -277,7 +291,7 @@ def create_device_locations(devices, locations):
     return device_locations
 
 
-def create_samples(num, devices, start_time):
+def create_samples(devices, start_time, sample_num):
     """Generate a series of data points for each device.
     
     Args:
@@ -291,15 +305,18 @@ def create_samples(num, devices, start_time):
 
     for device in devices:
         current_time = start_time
-        for i in range(num):
+        for i in range(sample_num):
             # generate reading value (random)
-            num = random.randrange(0, 1000)
-            ran_float = num / 1000
+            r_num = random.randrange(0, 1000)
+            ran_float = r_num / 1000
             
             # calculate datetime
             current_time = next_datetime(current_time, 0, 1)
 
-            samples.append(len(samples), current_time, ran_float, device[0])
+            samples.append([len(samples), current_time, ran_float, device[0]])
+
+    for sample in samples:
+        print(sample)
 
     return samples
             
@@ -319,10 +336,12 @@ def generate_soil_reading_table_data(device_num, location_num, sample_num, fname
         fname: name of file containing test data
     """
 
+    start_time = datetime(2024, 1, 1, 5)
+
     devices = create_devices(device_num)
     locations = create_locations(location_num)
     device_locations = create_device_locations(devices, locations)
-    samples = create_samples(devices, locations, sample_num)
+    samples = create_samples(devices, start_time, sample_num)
 
     create_csv(f"devices_{fname}", "device_id,software_version,microprocessor",
                devices)
@@ -335,7 +354,7 @@ def generate_soil_reading_table_data(device_num, location_num, sample_num, fname
 
 
 def main():
-    generate_soil_reading_table_data(100, "soil_test.txt")
+    generate_soil_reading_table_data(3, 3, 100, "soil_test_data.txt")
     #generate_moisture_data(100, "test_moisture.txt")
     #generate_weather_data(100, "test_weather.txt")
 
