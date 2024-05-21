@@ -52,7 +52,9 @@ class Database:
 
 
     def _create_from_schema(self, schema=schema_path):
-        """Create a new database using the schema file."""
+        """Create a new database using the schema file.
+        
+        WARNING: THIS WILL DELETE ALL DATA STORED IN DB!"""
         
         if self.database.exists():
             self.database.unlink() # Ensure a new database is created

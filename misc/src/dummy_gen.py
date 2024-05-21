@@ -4,13 +4,19 @@ Data for soil moisture and weather is required for GardenStation to work,
 until the microcontrollers have been set up and are running fake data must
 be used to test the web app which will be used to display said data.
 
-The following data will be generated in the specified format.
+Data will be generated for the following tables in csv format:
 
-Soil Moisture:
-    DateTime,MoistureLevel,Location,MonitorId
+devices:
+    device_id, software_version, microprocessor
 
-Weather Data:
-    DateTime,Temperature
+locations:
+    location_id, latitude, longitude, loc_address
+
+soil_readings:
+    reading_id, reading_time, soil_reading, device_id, location_id
+
+device_locations:
+    device_id, location_id, date_placed, date_removed
 
 """
 
@@ -141,8 +147,54 @@ def generate_weather_data(num, fname):
 
             prev_date = test_date
 
+def create_csv(fname, fields, data):
+    """Create a csv file with field and data values.
+    
+    Args:
+        fname: The file name to use for csv file.
+        fields: The field names for data on subsequent lines.
+        data: List of all data to write to file.
+        
+    """
+
+    abs_fpath = create_path(fname, 'data')
+
+    with open(abs_fpath, 'x') as f:
+        f.write(fields)
+        f.writelines(data) # NOTE may need to add new line separators
+
+
+def generate_soil_reading_table_data(device_num, location_num, sample_num, fname):
+    """Generate data for soil reading tables.
+    
+    Create data for the devices, locations, soil_readings and 
+    device_locations tables in the database and then write to
+    file in csv format.
+    
+    Args:
+        device_num: number of devices to create
+        location_num: number of locations to create
+        sample_num: number of soil reading samples to create
+        fname: name of file containing test data
+    """
+
+    devices = create_devices(device_num)
+    locations = create_locations(location_num)
+    device_locations = create_device_locations(devices, locations)
+    samples = create_samples(devices, locations, sample_num)
+
+    create_csv(f"devices_{fname}", "device_id,software_version,microprocessor",
+               devices)
+    create_csv(f"locations_{fname}", "location_id,latitude,longitude,loc_address",
+               locations)
+    create_csv(f"device_locations_{fname}", "device_id,location_id,date_placed,date_removed",
+               device_locations)
+    create_csv(f"soil_readings_{fname}", "reading_id,reading_time,soil_reading,device_id,location_id",
+               samples)
+
 
 def main():
+    generate_soil_reading_table_data(100, "soil_test.txt")
     generate_moisture_data(100, "test_moisture.txt")
     generate_weather_data(100, "test_weather.txt")
 
