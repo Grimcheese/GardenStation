@@ -25,7 +25,32 @@ from datetime import timedelta
 
 from pathlib import Path
 
+from argparse import ArgumentParser
+
 import random
+
+def read_args():
+    """Use argparse to parse command line arguments for data generation."""
+
+    parser = ArgumentParser(description="Process data generator arguments.")
+    
+    parser.add_argument("--device-number", "-d",
+        type=int, 
+        required=True,
+        help="Number of devices to generate")
+
+    parser.add_argument("--location-number","-l",
+        type=int,
+        required=True,
+        help="Number of locations to generate")
+
+    parser.add_argument("--sample-number", "-s",
+        type=int,
+        required=True,
+        help="Number of samples to generate")
+
+    return parser.parse_args()
+
 
 def next_datetime(dt_obj, d=0, h=0, m=0, s=0):
     """Create a new datetime object with specified time added to it.
@@ -229,7 +254,6 @@ def create_csv(fname, fields, data):
                 record_string.append(str(field))
 
             str_join = ','.join(record_string)
-            print(str_join)
             data_strings.append(f"{str_join}\n")
         
         
@@ -315,9 +339,6 @@ def create_samples(devices, start_time, sample_num):
 
             samples.append([len(samples), current_time, ran_float, device[0]])
 
-    for sample in samples:
-        print(sample)
-
     return samples
             
 
@@ -335,6 +356,10 @@ def generate_soil_reading_table_data(device_num, location_num, sample_num, fname
         sample_num: number of soil reading samples to create
         fname: name of file containing test data
     """
+
+    print("Creating test data for soil_moisture database...\n")
+    print(f"Number of devices: {device_num}\nNumber of locations: {location_num}\nSamples to generate: {sample_num}")
+
 
     start_time = datetime(2024, 1, 1, 5)
 
@@ -354,7 +379,8 @@ def generate_soil_reading_table_data(device_num, location_num, sample_num, fname
 
 
 def main():
-    generate_soil_reading_table_data(3, 3, 100, "soil_test_data.txt")
+    args = read_args()
+    generate_soil_reading_table_data(args.device_number, args.location_number, args.sample_number, "soil_test_data.txt")
     #generate_moisture_data(100, "test_moisture.txt")
     #generate_weather_data(100, "test_weather.txt")
 
