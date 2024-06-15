@@ -189,3 +189,53 @@ class Database:
         results.sort()
 
         return results
+    
+
+    def add_device(self, in_device_id, in_software_version, in_microprocessor):
+        """Add a new device to the devices table."""
+
+        self._insert_record("devices", 
+                            device_id=in_device_id, 
+                            software_version=in_software_version, 
+                            microprocessor=in_microprocessor)
+
+        """
+        connection = self._open_standard_connection()
+        cursor = connection.cursor()
+
+        cursor.execute("INSERT INTO devices (device_id, software_version, microprocessor) VALUES (?, ?, ?)", 
+                       (device_id, software_version, microprocessor))
+        
+        connection.commit()
+        connection.close()
+        """
+    
+    def add_location(self, in_latitude, in_longitude, in_address):
+        """Add a new location to the locations table."""
+
+        self._insert_record("locations",
+                            latitude=in_latitude,
+                            longitude=in_longitude,
+                            loc_address=in_address)
+        
+
+
+    def add_reading(self, timestamp, in_soil_reading, in_device_id):
+        """Add a new soil reading to soil_readings table."""
+
+        self._insert_record("soil_readings", 
+                            reading_time=timestamp,
+                            soil_reading=in_soil_reading,
+                            device_id=in_device_id)
+
+
+    def update_current_device_location(self, device_id, location_id, date_placed, date_removed):
+        pass
+
+
+    def remove_device_from_location(self, device_id, location_id, timestamp):
+        pass
+
+
+    def move_device_to_location(self, device_id, location_id, timestamp):
+        pass
