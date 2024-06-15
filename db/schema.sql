@@ -1,4 +1,4 @@
--- MySQL Schema script to create a new database according to
+-- SQLite Schema script to create a new database according to
 -- schema diagram in Database documentation
 
 DROP TABLE IF EXISTS locations;
