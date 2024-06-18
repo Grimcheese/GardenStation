@@ -194,6 +194,8 @@ class Database:
     def add_device(self, in_device_id, in_software_version, in_microprocessor):
         """Add a new device to the devices table."""
 
+        # TODO validate input values
+
         self._insert_record("devices", 
                             device_id=in_device_id, 
                             software_version=in_software_version, 
@@ -213,6 +215,8 @@ class Database:
     def add_location(self, in_latitude, in_longitude, in_address):
         """Add a new location to the locations table."""
 
+        # TODO validate input values
+
         self._insert_record("locations",
                             latitude=in_latitude,
                             longitude=in_longitude,
@@ -223,19 +227,42 @@ class Database:
     def add_reading(self, timestamp, in_soil_reading, in_device_id):
         """Add a new soil reading to soil_readings table."""
 
+        # TODO validate input values
+
         self._insert_record("soil_readings", 
                             reading_time=timestamp,
                             soil_reading=in_soil_reading,
                             device_id=in_device_id)
 
 
-    def update_current_device_location(self, device_id, location_id, date_placed, date_removed):
-        pass
+    def move_device_location(self, in_device_id, date_placed, new_location_id, move_time):
+        """Move a device from existing location to a new location."""
+
+        # TODO validate input values
+
+        self.remove_device_from_location(in_device_id, date_placed, move_time)
+        self.new_device_location(in_device_id, new_location_id, move_time)
 
 
-    def remove_device_from_location(self, device_id, location_id, timestamp):
-        pass
+    def new_device_location(self, in_device_id, in_location_id, timestamp):
+        """Move a device to a new location."""
+
+        # TODO validate input values
+
+        self._insert_record("device_locations",
+                            device_id=in_device_id,
+                            date_placed=timestamp,
+                            location_id=in_location_id)
 
 
-    def move_device_to_location(self, device_id, location_id, timestamp):
-        pass
+    def remove_device_from_location(self, device_id, date_placed, date_removed):
+        """Remove a device from a location."""
+
+        # TODO validate input values
+
+        connection = self._open_standard_connection()
+        cursor = connection.cursor()
+
+        query = "UPDATE device_locations SET date_removed = (?) WHERE device_id = (?) AND date_placed = (?)"
+        params = tuple(date_removed, device_id, date_placed)
+        cursor.execute(query, params)
