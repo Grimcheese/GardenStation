@@ -9,18 +9,38 @@ DATABASE_FILENAME = None
 
 root_dir = Path(__file__).parents[1]
 
-def insert_moisture_test_data(db, test_data_file):
-    """Insert moisture data from a csv file into specified database."""
+def insert_moisture_test_data(db, data_files):
+    """Insert moisture data from csv files into specified database.
+    
+    This function expects test data for four tables in csv format.
+    
+    Args:
+        db: The Database object referring to the database.
+        data_files: A dictionary containing table names as keys, 
+            and file paths as values.
+    """
 
-    with open(test_data_file, 'r') as f:
-        lines = f.readlines()
+    for table_name in data_files.keys():
+        with open(data_files[table_name], 'r') as f:
+            lines = f.readlines()
 
-        # skip the header line
-        for line in lines[1:]:
-            separated = line.strip().split(",")
-            #print(separated)
+            # skip the header line
+            for line in lines[1:]:
+                separated = line.strip().split(",")
+                #print(separated)
 
-            db.insert_moisture_record(f"{separated[0]}", separated[1], f"{separated[2]}", separated[3])
+                #db.insert_moisture_record(f"{separated[0]}", separated[1], f"{separated[2]}", separated[3])
+                
+                # Insert using Database interface methods
+                if table_name == "devices":
+                    db.add_device(separated[0], separated[1], separated[2])
+                elif table_name == "locations":
+                    db.add_location(separated[1], separated[2], separated[3])
+                elif table_name == "soil_readings":
+                    db.add_reading(separated[1], separated[2], separated [3])
+                elif table_name == "device_locations":
+                    db.add_device_location(separated[0], separated[2], separated[3], separated[1])
+
 
 def setup_script(db_name=None):
     global db_path
@@ -32,7 +52,19 @@ def setup_script(db_name=None):
     
 
 
-def execute(create_new, moisture_test_data=None):
+def execute(create_new, table_data=None):
+    """Run the main functionality of the script
+    
+    Create a new database and if provided, insert data into it.
+
+    Args:
+        create_new: Boolean value determining if a new database is to
+            be created or not when creating the Database object.
+        table_data: Dictionary containing table name as keys and
+            file path for the associated data as values.
+    """
+
+
     print(f"Root directory used: {root_dir}")
     print(f"Database file being used: {db_path}")
 
@@ -44,9 +76,9 @@ def execute(create_new, moisture_test_data=None):
     else:
         db = Database(create_new)
 
-    if moisture_test_data != None:
+    if table_data != None:
         # Put data into new database
-        insert_moisture_test_data(db, moisture_test_data)
+        insert_moisture_test_data(db, table_data)
 
     return db    
 

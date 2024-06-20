@@ -94,7 +94,7 @@ class Database:
         connection.commit()
         connection.close()
 
-
+    @DeprecationWarning
     def insert_moisture_record(self, timestamp, reading, location, device_id):
         """Create a new record in the moisture table.
         
@@ -233,6 +233,10 @@ class Database:
                             reading_time=timestamp,
                             soil_reading=in_soil_reading,
                             device_id=in_device_id)
+
+
+    def add_device_location(self, in_device_id, date_placed, date_removed, location):
+        pass
 
 
     def move_device_location(self, in_device_id, date_placed, new_location_id, move_time):
