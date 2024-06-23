@@ -12,7 +12,7 @@ root_dir = Path(__file__).parents[1]
 def insert_moisture_test_data(db, data_files):
     """Insert moisture data from csv files into specified database.
     
-    This function expects test data for four tables in csv format.
+    This function expects data for four tables in csv format.
     
     Args:
         db: The Database object referring to the database.
@@ -27,20 +27,23 @@ def insert_moisture_test_data(db, data_files):
             # skip the header line
             for line in lines[1:]:
                 separated = line.strip().split(",")
+                print(separated)
                 #print(separated)
 
                 #db.insert_moisture_record(f"{separated[0]}", separated[1], f"{separated[2]}", separated[3])
                 
                 # Insert using Database interface methods
                 if table_name == "devices":
-                    db.add_device(separated[0], separated[1], separated[2])
+                    db.add_device(separated[1], separated[2])
                 elif table_name == "locations":
                     db.add_location(separated[1], separated[2], separated[3])
                 elif table_name == "soil_readings":
                     db.add_reading(separated[1], separated[2], separated [3])
                 elif table_name == "device_locations":
-                    db.add_device_location(separated[0], separated[2], separated[3], separated[1])
-
+                    try:
+                        db.add_device_location(separated[0], separated[2], separated[3], separated[1])
+                    except IndexError as e:
+                        separated.append(None)
 
 def setup_script(db_name=None):
     global db_path

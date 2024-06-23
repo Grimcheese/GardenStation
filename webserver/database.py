@@ -94,6 +94,22 @@ class Database:
         connection.commit()
         connection.close()
 
+
+    def execute_query(self, query, parameters=None):
+        connection = self._open_row_connection()
+        cursor = connection.cursor()
+
+        if parameters is None:
+            cursor.execute(query)
+        else:
+            cursor.execute(query, parameters)
+        
+        results = [dict(row) for row in cursor.fetchall()]
+        connection.close()
+
+        return results
+
+
     @DeprecationWarning
     def insert_moisture_record(self, timestamp, reading, location, device_id):
         """Create a new record in the moisture table.
@@ -106,8 +122,8 @@ class Database:
         """
         
         self._insert_record("moisture_readings", timestamp=timestamp, moisture=reading, location=location, device_id=device_id)
-       
-       
+    
+    
     def get_moisture_from_timestamp(self, device_id, timestamp):
         """Retrieve a single record based on device_id and timestamp.
         
@@ -142,9 +158,11 @@ class Database:
         return results
 
 
-    def get_moisture_from_device_range(self, device, start, end):
+    def get_moisture_from_timestamp_range(self, start, end):
         """Get all moisture readings from a device within a datetime range.
         
+        Note, start and end times are inclusive.
+
         Args:
             device: The ID number of the device to query results from.
             start: Starting datetime for the range being searched. As a String in
@@ -156,10 +174,9 @@ class Database:
         connection = self._open_row_connection()
         cursor = connection.cursor()
 
-        query = "SELECT * FROM moisture_readings WHERE device_id IS (?) \
-        AND timestamp >= (?) AND timestamp <= (?);"
+        query = "SELECT * FROM soil_readings WHERE reading_time >= (?) AND reading_time <= (?);"
         
-        cursor.execute(query, (device, start, end))
+        cursor.execute(query, (start, end))
 
         results = [dict(row) for row in cursor.fetchall()]
         connection.close()
@@ -191,13 +208,12 @@ class Database:
         return results
     
 
-    def add_device(self, in_device_id, in_software_version, in_microprocessor):
+    def add_device(self, in_software_version, in_microprocessor):
         """Add a new device to the devices table."""
 
         # TODO validate input values
 
         self._insert_record("devices", 
-                            device_id=in_device_id, 
                             software_version=in_software_version, 
                             microprocessor=in_microprocessor)
 
@@ -235,8 +251,17 @@ class Database:
                             device_id=in_device_id)
 
 
-    def add_device_location(self, in_device_id, date_placed, date_removed, location):
-        pass
+    def add_device_location(self, in_device_id, in_date_placed, in_date_removed, in_location):
+        # TODO validate input values
+
+        if in_date_removed == None:
+            in_date_removed = "NULL"
+        
+        self._insert_record("device_location",
+                            device_id=in_device_id,
+                            date_placed=in_date_placed,
+                            date_removed=in_date_removed,
+                            location=in_location)
 
 
     def move_device_location(self, in_device_id, date_placed, new_location_id, move_time):
