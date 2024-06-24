@@ -183,7 +183,17 @@ class Database:
         
         return results
 
-    
+
+    def get_devices(self):
+        """Get all devices stored in database"""
+
+        query = "SELECT * FROM devices;"
+        results = self.execute_query(query)
+
+        return results
+
+
+    @DeprecationWarning
     def get_unique_column_vals(self, column_name):
         """Get a sorted list of all unique values for a columm."""
 
