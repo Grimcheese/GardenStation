@@ -29,6 +29,9 @@ from argparse import ArgumentParser
 
 import random
 
+# GLOBAL VARIABLES
+global_debug_output = False
+
 def read_args():
     """Use argparse to parse command line arguments for data generation."""
 
@@ -49,7 +52,11 @@ def read_args():
         required=True,
         help="Number of samples to generate")
 
-    return parser.parse_args()
+    parser.add_argument("-debug-output", "-db",
+        action='store_true')
+
+    args = parser.parse_args()
+    return args
 
 
 def next_datetime(dt_obj, d=0, h=0, m=0, s=0):
@@ -284,6 +291,8 @@ def create_device_locations(devices, locations):
         
         loc_index += 1
 
+        
+
     # place device in a new location after a random amount of time
     device_move_index = 0
     while loc_index < len(locations):
@@ -342,8 +351,7 @@ def create_samples(devices, start_time, sample_num):
     return samples
             
 
-
-def generate_soil_reading_table_data(device_num, location_num, sample_num, fname):
+def generate_soil_reading_table_data(args, fname):
     """Generate data for soil reading tables.
     
     Create data for the devices, locations, soil_readings and 
@@ -363,10 +371,10 @@ def generate_soil_reading_table_data(device_num, location_num, sample_num, fname
 
     start_time = datetime(2024, 1, 1, 5)
 
-    devices = create_devices(device_num)
-    locations = create_locations(location_num)
+    devices = create_devices(args.device_number)
+    locations = create_locations(args.location_number)
     device_locations = create_device_locations(devices, locations)
-    samples = create_samples(devices, start_time, sample_num)
+    samples = create_samples(devices, start_time, args.sample_number)
 
     create_csv(f"devices_{fname}", "device_id,software_version,microprocessor",
                devices)
@@ -380,7 +388,11 @@ def generate_soil_reading_table_data(device_num, location_num, sample_num, fname
 
 def main():
     args = read_args()
-    generate_soil_reading_table_data(args.device_number, args.location_number, args.sample_number, "soil_test_data.txt")
+    print(global_debug_output)
+    if args.debug_output:
+        print("******************\n*** Printing debug output! ***\n**********************")
+
+    generate_soil_reading_table_data(args, "soil_test_data.txt")
     #generate_moisture_data(100, "test_moisture.txt")
     #generate_weather_data(100, "test_weather.txt")
 
