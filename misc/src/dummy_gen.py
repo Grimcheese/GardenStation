@@ -270,6 +270,9 @@ def create_csv(fname, fields, data):
 def create_device_locations(devices, locations):
     """Create device_locations data for db.
     
+    Assumes that the number of locations are equal to or greater than
+    the number of devices.
+
     Each device must be placed in at least one place. If there are 
     unused locations create a new record at a random time interval
     and update the previous device_locations entry for that device.
@@ -366,7 +369,7 @@ def generate_soil_reading_table_data(args, fname):
     """
 
     print("Creating test data for soil_moisture database...\n")
-    print(f"Number of devices: {device_num}\nNumber of locations: {location_num}\nSamples to generate: {sample_num}")
+    #print(f"Number of devices: {device_num}\nNumber of locations: {location_num}\nSamples to generate: {sample_num}")
 
 
     start_time = datetime(2024, 1, 1, 5)
@@ -385,14 +388,41 @@ def generate_soil_reading_table_data(args, fname):
     create_csv(f"soil_readings_{fname}", "reading_id,reading_time,soil_reading,device_id,location_id",
                samples)
 
+def args_check(args):
+    """Check if a valid set of arguments has been supplied.
+    
+    Mandatory arguments are already checked by read_args() so this
+    method should only check for certain conditions.
+
+    Checks:
+        Number of locations is equal to or greater than number of 
+            devices.
+    
+    Return: A boolean value with the outcome of the checks. True for 
+        pass, False for failed checks.
+    """
+
+    if args.location_number < args.device_number:
+        print("Number of locations must be greater than or equal to number of devices.")
+        print(f"devices: {args.device_number} locations: {args.location_number}")
+
+        return False   
+    
+    return True
 
 def main():
     args = read_args()
+<<<<<<< HEAD
     print(global_debug_output)
     if args.debug_output:
         print("******************\n*** Printing debug output! ***\n**********************")
 
     generate_soil_reading_table_data(args, "soil_test_data.txt")
+=======
+
+    if args_check(args):
+        generate_soil_reading_table_data(args.device_number, args.location_number, args.sample_number, "soil_test_data.txt")
+>>>>>>> 9360dca0e2e2d2d8fb966e5553c5052dd5f7ba6f
     #generate_moisture_data(100, "test_moisture.txt")
     #generate_weather_data(100, "test_weather.txt")
 

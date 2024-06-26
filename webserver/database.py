@@ -95,6 +95,22 @@ class Database:
         connection.close()
 
 
+    def execute_query(self, query, parameters=None):
+        connection = self._open_row_connection()
+        cursor = connection.cursor()
+
+        if parameters is None:
+            cursor.execute(query)
+        else:
+            cursor.execute(query, parameters)
+        
+        results = [dict(row) for row in cursor.fetchall()]
+        connection.close()
+
+        return results
+
+
+    @DeprecationWarning
     def insert_moisture_record(self, timestamp, reading, location, device_id):
         """Create a new record in the moisture table.
         
@@ -106,8 +122,8 @@ class Database:
         """
         
         self._insert_record("moisture_readings", timestamp=timestamp, moisture=reading, location=location, device_id=device_id)
-       
-       
+    
+    
     def get_moisture_from_timestamp(self, device_id, timestamp):
         """Retrieve a single record based on device_id and timestamp.
         
@@ -142,9 +158,11 @@ class Database:
         return results
 
 
-    def get_moisture_from_device_range(self, device, start, end):
+    def get_moisture_from_timestamp_range(self, start, end):
         """Get all moisture readings from a device within a datetime range.
         
+        Note, start and end times are inclusive.
+
         Args:
             device: The ID number of the device to query results from.
             start: Starting datetime for the range being searched. As a String in
@@ -156,17 +174,26 @@ class Database:
         connection = self._open_row_connection()
         cursor = connection.cursor()
 
-        query = "SELECT * FROM moisture_readings WHERE device_id IS (?) \
-        AND timestamp >= (?) AND timestamp <= (?);"
+        query = "SELECT * FROM soil_readings WHERE reading_time >= (?) AND reading_time <= (?);"
         
-        cursor.execute(query, (device, start, end))
+        cursor.execute(query, (start, end))
 
         results = [dict(row) for row in cursor.fetchall()]
         connection.close()
         
         return results
 
-    
+
+    def get_devices(self):
+        """Get all devices stored in database"""
+
+        query = "SELECT * FROM devices;"
+        results = self.execute_query(query)
+
+        return results
+
+
+    @DeprecationWarning
     def get_unique_column_vals(self, column_name):
         """Get a sorted list of all unique values for a columm."""
 
@@ -189,3 +216,92 @@ class Database:
         results.sort()
 
         return results
+    
+
+    def add_device(self, in_software_version, in_microprocessor):
+        """Add a new device to the devices table."""
+
+        # TODO validate input values
+
+        self._insert_record("devices", 
+                            software_version=in_software_version, 
+                            microprocessor=in_microprocessor)
+
+        """
+        connection = self._open_standard_connection()
+        cursor = connection.cursor()
+
+        cursor.execute("INSERT INTO devices (device_id, software_version, microprocessor) VALUES (?, ?, ?)", 
+                       (device_id, software_version, microprocessor))
+        
+        connection.commit()
+        connection.close()
+        """
+    
+    def add_location(self, in_latitude, in_longitude, in_address):
+        """Add a new location to the locations table."""
+
+        # TODO validate input values
+
+        self._insert_record("locations",
+                            latitude=in_latitude,
+                            longitude=in_longitude,
+                            loc_address=in_address)
+        
+
+
+    def add_reading(self, timestamp, in_soil_reading, in_device_id):
+        """Add a new soil reading to soil_readings table."""
+
+        # TODO validate input values
+
+        self._insert_record("soil_readings", 
+                            reading_time=timestamp,
+                            soil_reading=in_soil_reading,
+                            device_id=in_device_id)
+
+
+    def add_device_location(self, in_device_id, in_date_placed, in_date_removed, in_location):
+        # TODO validate input values
+
+        if in_date_removed == None:
+            in_date_removed = "NULL"
+        
+        self._insert_record("device_location",
+                            device_id=in_device_id,
+                            date_placed=in_date_placed,
+                            date_removed=in_date_removed,
+                            location=in_location)
+
+
+    def move_device_location(self, in_device_id, date_placed, new_location_id, move_time):
+        """Move a device from existing location to a new location."""
+
+        # TODO validate input values
+
+        self.remove_device_from_location(in_device_id, date_placed, move_time)
+        self.new_device_location(in_device_id, new_location_id, move_time)
+
+
+    def new_device_location(self, in_device_id, in_location_id, timestamp):
+        """Move a device to a new location."""
+
+        # TODO validate input values
+
+        self._insert_record("device_locations",
+                            device_id=in_device_id,
+                            date_placed=timestamp,
+                            location_id=in_location_id)
+
+
+    def remove_device_from_location(self, device_id, date_placed, date_removed):
+        """Remove a device from a location."""
+
+        # TODO validate input values
+
+        connection = self._open_standard_connection()
+        cursor = connection.cursor()
+
+        query = "UPDATE device_locations SET date_removed = (?) WHERE device_id = (?) AND date_placed = (?)"
+        params = tuple(date_removed, device_id, date_placed)
+        cursor.execute(query, params)
